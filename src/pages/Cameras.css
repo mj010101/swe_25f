@@ -1,0 +1,345 @@
+.cameras {
+  padding: 1.25rem 1rem;
+  max-width: 100%;
+  min-height: calc(100vh - 140px);
+}
+
+.cameras-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cameras-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cameras-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cameras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.camera-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.camera-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.camera-card.offline {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.camera-card.offline:hover {
+  transform: none;
+  border-color: var(--border-color);
+}
+
+.camera-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.688rem;
+  font-weight: 600;
+}
+
+.recording-indicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.camera-placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.offline-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.offline-overlay p {
+  font-size: 0.875rem;
+}
+
+.camera-info {
+  padding: 0.875rem;
+}
+
+.camera-info h3 {
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.375rem;
+}
+
+.camera-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.quality {
+  background-color: var(--bg-color);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Fullscreen View */
+.camera-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-color);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .camera-fullscreen {
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 480px;
+  }
+}
+
+.close-button {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.camera-feed-large {
+  flex: 1;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: var(--radius-lg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.live-indicator {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.camera-feed-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.camera-feed-placeholder p {
+  font-size: 1.125rem;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.control-btn {
+  flex: 1;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.control-btn:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+.control-btn.recording {
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+.direction-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.direction-pad {
+  flex: 1;
+  display: grid;
+  grid-template-areas:
+    ". up ."
+    "left center right"
+    ". down .";
+  gap: 0.5rem;
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.dir-btn {
+  width: 48px;
+  height: 48px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.dir-btn:active {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(0.95);
+}
+
+.dir-btn.up {
+  grid-area: up;
+}
+.dir-btn.left {
+  grid-area: left;
+}
+.dir-btn.center {
+  grid-area: center;
+}
+.dir-btn.right {
+  grid-area: right;
+}
+.dir-btn.down {
+  grid-area: down;
+}
+
+.zoom-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.zoom-btn {
+  width: 48px;
+  height: 48px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+.zoom-btn:active {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(0.95);
+}

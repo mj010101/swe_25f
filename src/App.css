@@ -1,0 +1,118 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+}
+
+/* Premium Header Design */
+.app-header {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text-primary);
+  padding: var(--spacing-lg) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--divider);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.app-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, #0a84ff 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Header Status Badge */
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 13px;
+  font-weight: 500;
+  background: rgba(50, 215, 75, 0.15);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(50, 215, 75, 0.3);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-indicator.active {
+  background-color: var(--success-green);
+  box-shadow: 0 0 0 4px rgba(50, 215, 75, 0.2);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.status-text {
+  font-weight: 500;
+  color: var(--success-green);
+  letter-spacing: -0.01em;
+}
+
+/* App Content */
+.app-content {
+  flex: 1;
+  padding-bottom: 90px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Smooth scroll */
+.app-content {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for WebKit browsers */
+.app-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.app-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .app-header {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+  }
+
+  .app-header h1 {
+    font-size: 34px;
+  }
+}

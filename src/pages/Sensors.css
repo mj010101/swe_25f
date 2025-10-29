@@ -1,0 +1,228 @@
+.sensors {
+  padding: 1.25rem 1rem;
+  max-width: 100%;
+  min-height: calc(100vh - 140px);
+}
+
+.sensors-header {
+  margin-bottom: 1.5rem;
+}
+
+.sensors-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sensors-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem 0.75rem;
+  text-align: center;
+}
+
+.stat-box.normal {
+  border-color: var(--secondary-color);
+  background-color: rgba(16, 185, 129, 0.05);
+}
+
+.stat-box.warning {
+  border-color: var(--warning-color);
+  background-color: rgba(251, 191, 36, 0.05);
+}
+
+.stat-box.critical {
+  border-color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.stat-box.normal .stat-number {
+  color: var(--secondary-color);
+}
+
+.stat-box.warning .stat-number {
+  color: var(--warning-color);
+}
+
+.stat-box.critical .stat-number {
+  color: var(--danger-color);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.sensor-types {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sensor-types::-webkit-scrollbar {
+  height: 2px;
+}
+
+.sensor-types::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 2px;
+}
+
+.type-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.type-btn:hover {
+  border-color: var(--primary-color);
+}
+
+.type-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.type-icon {
+  font-size: 1.25rem;
+}
+
+.type-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.sensors-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.875rem;
+}
+
+.sensor-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.sensor-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.sensor-card.warning {
+  border-color: var(--warning-color);
+  background-color: rgba(251, 191, 36, 0.05);
+}
+
+.sensor-card.critical {
+  border-color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.sensor-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sensor-type-icon {
+  font-size: 1.5rem;
+}
+
+.sensor-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+}
+
+.sensor-card-body {
+  margin-bottom: 0.875rem;
+}
+
+.sensor-card-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.sensor-card-room {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.sensor-card-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.sensor-card.warning .sensor-card-value {
+  color: var(--warning-color);
+}
+
+.sensor-card.critical .sensor-card-value {
+  color: var(--danger-color);
+}
+
+.sensor-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.battery-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.battery-indicator svg {
+  flex-shrink: 0;
+}
+
+.low-battery {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.last-update {
+  font-size: 0.688rem;
+  color: var(--text-secondary);
+}

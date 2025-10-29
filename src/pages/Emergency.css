@@ -1,0 +1,242 @@
+.emergency {
+  padding: 1.25rem 1rem;
+  max-width: 100%;
+}
+
+.emergency-panel {
+  margin-bottom: 2rem;
+}
+
+.emergency-button {
+  width: 100%;
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emergency-button:hover {
+  background: #dc2626;
+  box-shadow: var(--shadow-md);
+}
+
+.emergency-button.active {
+  background: #dc2626;
+  animation: pulse-emergency 1.5s infinite;
+}
+
+@keyframes pulse-emergency {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.emergency-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emergency-text {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.emergency-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.875rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: 1px solid #fca5a5;
+}
+
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.contact-card {
+  background-color: var(--card-bg);
+  padding: 1.125rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.contact-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-card.police {
+  border-color: #3498db;
+}
+
+.contact-card.fire {
+  border-color: #e74c3c;
+}
+
+.contact-card.medical {
+  border-color: #2ecc71;
+}
+
+.contact-card.security {
+  border-color: #f39c12;
+}
+
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contact-number {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.action-card {
+  background-color: var(--card-bg);
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.alert-item {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 1rem;
+  border-left: 4px solid var(--text-secondary);
+}
+
+.alert-item.severity-high {
+  border-left-color: var(--danger-color);
+}
+
+.alert-item.severity-medium {
+  border-left-color: var(--warning-color);
+}
+
+.alert-item.severity-low {
+  border-left-color: var(--secondary-color);
+}
+
+.alert-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.severity-high .alert-indicator {
+  background-color: var(--danger-color);
+  animation: pulse 2s infinite;
+}
+
+.severity-medium .alert-indicator {
+  background-color: var(--warning-color);
+}
+
+.severity-low .alert-indicator {
+  background-color: var(--secondary-color);
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.alert-type {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.alert-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.alert-location {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

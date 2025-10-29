@@ -1,0 +1,161 @@
+.floorplan {
+  padding: 1.25rem 1rem;
+  max-width: 100%;
+  min-height: calc(100vh - 140px);
+}
+
+.floorplan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.floorplan-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot.safe {
+  background-color: #10b981;
+}
+
+.legend-dot.warning {
+  background-color: #f59e0b;
+}
+
+.legend-dot.alert {
+  background-color: #ef4444;
+}
+
+.floorplan-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.floorplan-svg {
+  width: 100%;
+  height: auto;
+}
+
+.floorplan-svg text {
+  user-select: none;
+}
+
+.sensors-list {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.sensors-list h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.sensors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.sensor-item {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.sensor-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.sensor-item.warning {
+  border-color: var(--warning-color);
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+.sensor-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.sensor-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.sensor-name {
+  font-size: 0.813rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sensor-status {
+  font-size: 0.688rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+.sensor-item.warning .sensor-status {
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
+.clear-selection {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.875rem;
+  font-size: 0.938rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.clear-selection:hover {
+  background-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.clear-selection:active {
+  transform: scale(0.98);
+}

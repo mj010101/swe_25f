@@ -1,0 +1,119 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Premium Dark Theme - Apple/Nest Inspired */
+  --bg-base: #0f0f0f;
+  --card-bg: rgba(28, 28, 30, 0.8);
+  --card-bg-solid: #1c1c1e;
+
+  /* iOS-style Accent Colors */
+  --accent-blue: #0a84ff;
+  --accent-blue-glow: rgba(10, 132, 255, 0.3);
+  --success-green: #32d74b;
+  --warning-orange: #ff9f0a;
+  --alert-red: #ff453a;
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --text-tertiary: rgba(255, 255, 255, 0.6);
+
+  /* UI Elements */
+  --divider: #38383a;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+
+  /* Glassmorphic Effects */
+  --glass-bg: rgba(28, 28, 30, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Shadows - Premium depth */
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 12px 48px rgba(0, 0, 0, 0.5);
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  /* Border Radius */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing System (8px base) */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+
+  /* Legacy compatibility */
+  --primary-color: #0a84ff;
+  --secondary-color: #32d74b;
+  --danger-color: #ff453a;
+  --warning-color: #ff9f0a;
+  --bg-color: #0f0f0f;
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --border-color: #38383a;
+}
+
+[data-theme="dark"] {
+  /* Same as root for consistency */
+  --bg-base: #0f0f0f;
+  --card-bg: rgba(28, 28, 30, 0.8);
+  --accent-blue: #0a84ff;
+  --success-green: #32d74b;
+  --warning-orange: #ff9f0a;
+  --alert-red: #ff453a;
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --primary-color: #0a84ff;
+  --secondary-color: #32d74b;
+  --danger-color: #ff453a;
+  --warning-color: #ff9f0a;
+  --bg-color: #0f0f0f;
+  --border-color: #38383a;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-base);
+  background-image: radial-gradient(
+      circle at 20% 50%,
+      rgba(10, 132, 255, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(50, 215, 75, 0.03) 0%,
+      transparent 50%
+    );
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.5;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 모바일 뷰포트 최적화 */
+@media (min-width: 768px) {
+  #root {
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
+  }
+}
