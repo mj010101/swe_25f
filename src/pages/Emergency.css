@@ -9,7 +9,7 @@
 
 .emergency-button {
   width: 100%;
-  background: var(--danger-color);
+  background: var(--accent-blue);
   color: white;
   border: none;
   border-radius: var(--radius-lg);
@@ -26,22 +26,22 @@
 }
 
 .emergency-button:hover {
-  background: #dc2626;
+  background: rgba(10, 132, 255, 0.9);
   box-shadow: var(--shadow-md);
 }
 
 .emergency-button.active {
-  background: #dc2626;
+  background: rgba(10, 132, 255, 0.9);
   animation: pulse-emergency 1.5s infinite;
 }
 
 @keyframes pulse-emergency {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.7);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 10px rgba(10, 132, 255, 0);
   }
 }
 
@@ -57,15 +57,15 @@
 }
 
 .emergency-message {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: rgba(10, 132, 255, 0.1);
+  color: var(--accent-blue);
   padding: 0.875rem;
   border-radius: var(--radius-md);
   text-align: center;
   margin-top: 1rem;
   font-weight: 500;
   font-size: 0.875rem;
-  border: 1px solid #fca5a5;
+  border: 1px solid rgba(10, 132, 255, 0.3);
 }
 
 .contacts-grid {
@@ -88,30 +88,31 @@
 }
 
 .contact-card:hover {
-  border-color: var(--primary-color);
+  border-color: var(--accent-blue);
   box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
 
-.contact-card.police {
-  border-color: #3498db;
-}
-
-.contact-card.fire {
-  border-color: #e74c3c;
-}
-
-.contact-card.medical {
-  border-color: #2ecc71;
-}
-
+.contact-card.police,
+.contact-card.fire,
+.contact-card.medical,
 .contact-card.security {
-  border-color: #f39c12;
+  border-color: rgba(10, 132, 255, 0.3);
+}
+
+.contact-card:hover.police,
+.contact-card:hover.fire,
+.contact-card:hover.medical,
+.contact-card:hover.security {
+  border-color: var(--accent-blue);
+  background: rgba(10, 132, 255, 0.05);
 }
 
 .contact-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--accent-blue);
 }
 
 .contact-name {
@@ -137,7 +138,7 @@
   padding: 1.25rem;
   border-radius: 12px;
   box-shadow: var(--shadow);
-  border: 2px solid var(--border-color);
+  border: 2px solid rgba(10, 132, 255, 0.3);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -149,13 +150,15 @@
 .action-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary-color);
+  border-color: var(--accent-blue);
+  background: rgba(10, 132, 255, 0.05);
 }
 
 .action-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--accent-blue);
 }
 
 .action-label {

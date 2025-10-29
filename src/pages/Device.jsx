@@ -248,8 +248,8 @@ const Device = () => {
         d.status === "detected" ||
         d.status === "open",
     );
-    if (hasWarning) return "#f59e0b";
-    return "#10b981";
+    if (hasWarning) return "rgba(10, 132, 255, 0.8)";
+    return "#0a84ff";
   };
 
   const toggleDeviceActive = () => {

@@ -111,20 +111,177 @@ const Dashboard = ({ onNavigate }) => {
   ];
 
   const rooms = [
-    { name: "Bedroom", temp: "22°C", status: "normal", icon: "🛏️" },
-    { name: "Smart Lamp", temp: "On", status: "active", icon: "💡" },
-    { name: "Air Conditioner", temp: "25°C", status: "normal", icon: "❄️" },
-    { name: "Living Room", temp: "23°C", status: "normal", icon: "🛋️" },
+    {
+      name: "Bedroom",
+      temp: "22°C",
+      status: "normal",
+      icon: (
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a2 2 0 0 1 4 0v4" />
+          <path d="M13 11V7a2 2 0 0 1 4 0v4" />
+        </svg>
+      ),
+    },
+    {
+      name: "Smart Lamp",
+      temp: "On",
+      status: "active",
+      icon: (
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      ),
+    },
+    {
+      name: "Air Conditioner",
+      temp: "25°C",
+      status: "normal",
+      icon: (
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M12 2v20M17 7l-5 5-5-5M7 17l5-5 5 5" />
+          <circle cx="12" cy="12" r="2" />
+        </svg>
+      ),
+    },
+    {
+      name: "Living Room",
+      temp: "23°C",
+      status: "normal",
+      icon: (
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <rect x="3" y="9" width="18" height="11" rx="2" ry="2" />
+          <path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" />
+          <line x1="9" y1="20" x2="9" y2="14" />
+          <line x1="15" y1="20" x2="15" y2="14" />
+        </svg>
+      ),
+    },
   ];
 
+  // All stats colors are now blue theme
   const stats = [
     { label: "Active Devices", value: "8", color: "var(--accent-blue)" },
-    { label: "Today's Events", value: "3", color: "var(--success-green)" },
-    { label: "Alerts", value: "2", color: "var(--warning-orange)" },
+    { label: "Today's Events", value: "3", color: "rgba(10, 132, 255, 0.8)" },
+    { label: "Alerts", value: "2", color: "rgba(10, 132, 255, 0.6)" },
+  ];
+
+  // Recent Activity Logs with video recording
+  const recentLogs = [
+    {
+      id: 1,
+      time: "10:30 AM",
+      title: "Front Door Motion Detected",
+      location: "Entrance",
+      hasVideo: true,
+      type: "motion",
+    },
+    {
+      id: 2,
+      time: "09:15 AM",
+      title: "Door Lock Activated",
+      location: "Front Door",
+      hasVideo: false,
+      type: "lock",
+    },
+    {
+      id: 3,
+      time: "08:00 AM",
+      title: "Window Opened",
+      location: "Bedroom",
+      hasVideo: true,
+      type: "window",
+    },
   ];
 
   const toggleDevice = (device) => {
     setDevicesState((prev) => ({ ...prev, [device]: !prev[device] }));
+  };
+
+  const getLogIcon = (type) => {
+    switch (type) {
+      case "motion":
+        return (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="12" cy="12" r="2" />
+            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49" />
+          </svg>
+        );
+      case "lock":
+        return (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        );
+      case "window":
+        return (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="12" y1="3" x2="12" y2="21" />
+          </svg>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -297,6 +454,44 @@ const Dashboard = ({ onNavigate }) => {
             <div className="stat-label">{stat.label}</div>
           </div>
         ))}
+      </section>
+
+      {/* Recent Activity Logs */}
+      <section className="logs-section">
+        <h3 className="section-title">Recent Activity</h3>
+        <div className="logs-list">
+          {recentLogs.map((log) => (
+            <div key={log.id} className="log-item">
+              <div className="log-icon">{getLogIcon(log.type)}</div>
+              <div className="log-content">
+                <div className="log-title">{log.title}</div>
+                <div className="log-meta">
+                  <span className="log-time">{log.time}</span>
+                  <span className="log-divider">•</span>
+                  <span className="log-location">{log.location}</span>
+                </div>
+              </div>
+              {log.hasVideo && (
+                <button
+                  className="log-video-btn"
+                  onClick={() => onNavigate && onNavigate("recordings")}
+                  title="View Recording"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* All Conditions Grid */}

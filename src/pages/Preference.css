@@ -173,6 +173,12 @@
 
 .menu-icon {
   font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.menu-icon svg {
+  color: var(--text-primary);
+  stroke: var(--text-primary);
 }
 
 .menu-label {
