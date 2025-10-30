@@ -626,7 +626,47 @@
 }
 
 /* Responsive Design */
-@media (min-width: 768px) {
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dashboard {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+  }
+
+  .hero-card {
+    padding: var(--spacing-2xl);
+  }
+
+  /* 3열 그리드 레이아웃 */
+  .device-toggles {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats-section {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .conditions-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* 로그 아이템 더 크게 */
+  .log-item {
+    padding: var(--spacing-lg);
+  }
+
+  .log-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
   .dashboard {
     padding: var(--spacing-2xl);
     max-width: 600px;

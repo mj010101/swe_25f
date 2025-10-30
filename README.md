@@ -135,9 +135,16 @@ ui_first/
 
 ## 📱 Responsive Design
 
-- **Mobile**: 320px - 767px (optimized)
-- **Tablet**: 768px - 1024px
-- **Desktop**: 1025px+ (max-width: 600px centered)
+- **Mobile**: 320px - 767px (최적화됨)
+- **iPad/Tablet**: 768px - 1024px (전체 너비 활용, 3-4열 그리드)
+- **Desktop**: 1025px+ (최대 600px 너비로 중앙 정렬)
+
+### iPad 최적화 기능
+
+- 3-4열 그리드 레이아웃으로 더 많은 콘텐츠 표시
+- 전체 화면 너비 활용
+- 더 큰 터치 타겟 및 간격
+- 최적화된 네비게이션 바
 
 ## ⚡ Performance
 

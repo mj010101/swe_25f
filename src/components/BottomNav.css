@@ -19,7 +19,30 @@
   height: 80px;
 }
 
-@media (min-width: 768px) {
+/* iPad (768px - 1024px): 전체 너비 사용 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .bottom-nav {
+    left: 0;
+    right: 0;
+    transform: none;
+  }
+  
+  .nav-item {
+    max-width: 140px;
+  }
+  
+  .nav-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .nav-label {
+    font-size: 12px;
+  }
+}
+
+/* Desktop (1025px+): 중앙 정렬 */
+@media (min-width: 1025px) {
   .bottom-nav {
     max-width: 600px;
     left: 50%;

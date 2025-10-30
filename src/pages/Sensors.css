@@ -226,3 +226,38 @@
   font-size: 0.688rem;
   color: var(--text-secondary);
 }
+
+/* Responsive Design */
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .sensors {
+    padding: 1.5rem 2rem;
+  }
+
+  .sensors-stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-box {
+    padding: 1.25rem;
+  }
+
+  .sensors-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .sensor-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .sensors {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

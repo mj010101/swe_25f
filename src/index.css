@@ -109,10 +109,19 @@ body {
   flex-direction: column;
 }
 
-/* 모바일 뷰포트 최적화 */
-@media (min-width: 768px) {
+/* 반응형 뷰포트 최적화 */
+/* iPad (768px - 1024px): 전체 너비 활용 */
+@media (min-width: 768px) and (max-width: 1024px) {
   #root {
-    max-width: 480px;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* 데스크톱 (1025px+): 최대 너비 제한 */
+@media (min-width: 1025px) {
+  #root {
+    max-width: 600px;
     margin: 0 auto;
     box-shadow: var(--shadow-lg);
   }

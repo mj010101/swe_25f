@@ -243,3 +243,36 @@
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
+
+/* Responsive Design */
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .emergency {
+    padding: 1.5rem 2rem;
+  }
+
+  .contacts-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .action-card {
+    padding: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .emergency {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

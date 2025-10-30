@@ -172,11 +172,36 @@
   padding: 1rem;
 }
 
-@media (min-width: 768px) {
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .cameras {
+    padding: 1.5rem 2rem;
+  }
+
+  .cameras-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .camera-fullscreen {
+    left: 0;
+    transform: none;
+    max-width: 100%;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .cameras {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
   .camera-fullscreen {
     left: 50%;
     transform: translateX(-50%);
-    max-width: 480px;
+    max-width: 600px;
   }
 }
 

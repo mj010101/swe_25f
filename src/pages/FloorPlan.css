@@ -159,3 +159,28 @@
 .clear-selection:active {
   transform: scale(0.98);
 }
+
+/* Responsive Design */
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .floorplan {
+    padding: 1.5rem 2rem;
+  }
+
+  .floorplan-container {
+    padding: 2rem;
+  }
+
+  .sensors-grid {
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .floorplan {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

@@ -436,3 +436,39 @@
   font-size: 0.75rem;
   font-weight: 600;
 }
+
+/* Responsive Design */
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .device {
+    padding: 1.5rem 2rem;
+  }
+
+  .device-summary {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .device-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .camera-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .camera-thumbnail {
+    width: 100px;
+    height: 75px;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .device {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

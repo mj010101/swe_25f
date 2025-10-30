@@ -296,3 +296,32 @@
   border-color: var(--primary-color);
   color: var(--primary-color);
 }
+
+/* Responsive Design */
+/* iPad (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .recordings {
+    padding: 1.5rem 2rem;
+  }
+
+  .recordings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .recording-thumbnail {
+    width: 150px;
+  }
+
+  .action-buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .recordings {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
