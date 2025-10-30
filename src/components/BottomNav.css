@@ -19,8 +19,8 @@
   height: 80px;
 }
 
-/* iPad (768px - 1024px): 전체 너비 사용 */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px): 전체 너비 사용 */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .bottom-nav {
     left: 0;
     right: 0;
@@ -41,8 +41,38 @@
   }
 }
 
-/* Desktop (1025px+): 중앙 정렬 */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px): 컴팩트 네비게이션 */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .bottom-nav {
+    left: 0;
+    right: 0;
+    transform: none;
+    height: 70px;
+    padding: 0;
+  }
+  
+  .nav-item {
+    max-width: 160px;
+    padding: 8px 0;
+  }
+  
+  .nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .nav-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .nav-label {
+    font-size: 11px;
+  }
+}
+
+/* Desktop (1401px+): 중앙 정렬 */
+@media (min-width: 1401px) {
   .bottom-nav {
     max-width: 600px;
     left: 50%;

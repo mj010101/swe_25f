@@ -245,8 +245,8 @@
 }
 
 /* Responsive Design */
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .emergency {
     padding: 1.5rem 2rem;
   }
@@ -268,8 +268,75 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) - Fill screen with proper spacing */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .emergency {
+    padding: 1.25rem 2rem 2rem;
+  }
+
+  .emergency-panel {
+    margin-bottom: 2rem;
+  }
+
+  .emergency-button {
+    padding: 1.5rem;
+  }
+
+  .emergency-message {
+    margin-top: 1.25rem;
+  }
+
+  /* Emergency Contacts Section */
+  section:has(.contacts-grid) {
+    margin-bottom: 2rem;
+  }
+
+  .contacts-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+  }
+
+  /* Emergency Actions Section */
+  section:has(.actions-grid) {
+    margin-bottom: 2rem;
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .action-card {
+    padding: 1.25rem;
+  }
+
+  /* Recent Alerts Section - Fit all 3 in one line */
+  .alerts-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .alert-item {
+    padding: 1rem;
+  }
+
+  .alert-type {
+    font-size: 0.875rem;
+  }
+
+  .alert-time,
+  .alert-location {
+    font-size: 0.75rem;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .emergency {
     padding: 1.5rem 2rem;
     max-width: 600px;

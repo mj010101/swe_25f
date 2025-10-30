@@ -161,8 +161,8 @@
 }
 
 /* Responsive Design */
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .floorplan {
     padding: 1.5rem 2rem;
   }
@@ -176,8 +176,27 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .floorplan {
+    padding: 1.25rem 2rem;
+  }
+
+  .floorplan-container {
+    padding: 1.5rem 2rem;
+  }
+
+  .sensors-grid {
+    grid-template-columns: repeat(6, minmax(140px, 1fr));
+  }
+
+  .sensor-item {
+    padding: 1rem;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .floorplan {
     padding: 1.5rem 2rem;
     max-width: 600px;

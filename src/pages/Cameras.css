@@ -172,8 +172,8 @@
   padding: 1rem;
 }
 
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .cameras {
     padding: 1.5rem 2rem;
   }
@@ -190,8 +190,62 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) - Horizontal layout */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .cameras {
+    padding: 1.25rem 2rem;
+  }
+
+  .cameras-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* Fullscreen view - 2 column layout */
+  .camera-fullscreen {
+    left: 0;
+    transform: none;
+    max-width: 100%;
+    padding: 1rem 2rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    grid-template-areas:
+      "close close"
+      "feed controls"
+      "feed direction";
+  }
+
+  .close-button {
+    grid-area: close;
+  }
+
+  .camera-feed-large {
+    grid-area: feed;
+    aspect-ratio: 16 / 9;
+    max-height: calc(100vh - 200px);
+  }
+
+  .camera-controls {
+    grid-area: controls;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    align-self: start;
+  }
+
+  .direction-controls {
+    grid-area: direction;
+    align-self: start;
+  }
+
+  .control-btn {
+    padding: 1rem;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .cameras {
     padding: 1.5rem 2rem;
     max-width: 600px;

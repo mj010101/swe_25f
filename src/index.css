@@ -110,19 +110,32 @@ body {
 }
 
 /* 반응형 뷰포트 최적화 */
-/* iPad (768px - 1024px): 전체 너비 활용 */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px): 전체 너비 활용 */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   #root {
     width: 100%;
     margin: 0;
   }
 }
 
-/* 데스크톱 (1025px+): 최대 너비 제한 */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px): 전체 너비 활용 */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  #root {
+    width: 100%;
+    margin: 0;
+  }
+  
+  body {
+    font-size: 16px;
+  }
+}
+
+/* 데스크톱 (1401px+): 최대 너비 제한 */
+@media (min-width: 1401px) {
   #root {
     max-width: 600px;
     margin: 0 auto;
     box-shadow: var(--shadow-lg);
   }
 }
+

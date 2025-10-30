@@ -626,8 +626,8 @@
 }
 
 /* Responsive Design */
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .dashboard {
     padding: var(--spacing-2xl) var(--spacing-xl);
   }
@@ -665,8 +665,213 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) - 2 Column Layout - Perfectly Aligned */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .dashboard {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    grid-template-areas:
+      "hero controls"
+      "hero controls";
+    height: calc(100vh - 160px);
+    overflow: hidden;
+  }
+
+  /* Hero card takes full left column */
+  .hero-card {
+    grid-area: hero;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .hero-header {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .hero-title {
+    font-size: 16px;
+  }
+
+  .camera-preview {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+    height: auto;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .hero-room-info {
+    margin-bottom: var(--spacing-sm);
+    flex: 1; /* Allow room info to grow and push footer to bottom */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .room-name {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .device-toggles {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    margin-top: auto; /* Push toggles to bottom of room info */
+  }
+
+  .toggle-device {
+    padding: var(--spacing-xs);
+  }
+
+  .hero-footer {
+    margin-bottom: var(--spacing-xs);
+    padding-top: var(--spacing-xs);
+    margin-top: 0; /* Remove automatic margin */
+  }
+
+  .status-progress {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .hero-actions {
+    gap: var(--spacing-xs);
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Right column wrapper to control height */
+  .dashboard::after {
+    content: "";
+    grid-column: 2;
+    display: block;
+  }
+
+  /* Right column: stack and fill height */
+  .quick-actions-section,
+  .stats-section,
+  .logs-section {
+    grid-column: 2;
+  }
+
+  /* All Conditions spans both columns */
+  .conditions-section {
+    grid-column: 1 / -1; /* Span full width across both columns */
+    margin-bottom: 0;
+    margin-top: var(--spacing-md);
+  }
+
+  /* Hide stats section to save space */
+  .stats-section {
+    display: none;
+  }
+
+  .quick-actions-section {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+  }
+
+  .logs-section {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .conditions-grid {
+    grid-template-columns: repeat(4, 1fr); /* 1x4 grid layout - single row */
+    gap: var(--spacing-md);
+    width: 100%; /* Full width */
+  }
+
+  .condition-card {
+    padding: var(--spacing-sm);
+  }
+
+  .condition-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .condition-name {
+    font-size: 13px;
+  }
+
+  .condition-value {
+    font-size: 12px;
+  }
+
+  .logs-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .log-item {
+    padding: var(--spacing-xs);
+  }
+
+  .log-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .log-title {
+    font-size: 13px;
+  }
+
+  .log-meta {
+    font-size: 11px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .quick-action-card {
+    padding: var(--spacing-sm);
+  }
+
+  .action-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .action-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .action-title {
+    font-size: 14px;
+  }
+
+  .action-subtitle {
+    font-size: 11px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .action-value {
+    font-size: 18px;
+  }
+
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .dashboard {
     padding: var(--spacing-2xl);
     max-width: 600px;

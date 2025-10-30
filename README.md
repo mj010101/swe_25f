@@ -135,16 +135,28 @@ ui_first/
 
 ## 📱 Responsive Design
 
-- **Mobile**: 320px - 767px (최적화됨)
-- **iPad/Tablet**: 768px - 1024px (전체 너비 활용, 3-4열 그리드)
-- **Desktop**: 1025px+ (최대 600px 너비로 중앙 정렬)
+- **Mobile**: 320px - 767px (optimized)
+- **iPad/Tablet Portrait**: 768px - 1024px (3-4 column grid)
+- **iPad/Tablet Landscape**: 1024px - 1400px (2-column layout, iPad Pro support)
+- **Desktop**: 1401px+ (centered with max-width 600px)
 
-### iPad 최적화 기능
+### iPad Optimization Features
 
-- 3-4열 그리드 레이아웃으로 더 많은 콘텐츠 표시
-- 전체 화면 너비 활용
-- 더 큰 터치 타겟 및 간격
-- 최적화된 네비게이션 바
+#### Portrait Mode
+
+- 3-4 column grid layout for efficient content display
+- Full screen width utilization
+- Touch-friendly interface
+
+#### Landscape Mode
+
+- 2-column layout for maximum information at a glance
+- iPad Pro (1366x1024) full support
+- Compact navigation bar (70px height)
+- Dashboard: Camera view on left, controls on right
+- Device: Floor plan fits in one view without scrolling
+- Camera detail: Video on left, controls on right
+- Optimized UI for wider screens
 
 ## ⚡ Performance
 

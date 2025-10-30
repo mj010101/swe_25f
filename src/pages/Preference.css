@@ -221,8 +221,8 @@
 }
 
 /* Responsive Design */
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .preference {
     padding: 1.5rem 2rem;
   }
@@ -242,8 +242,48 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .preference {
+    padding: 1.25rem 2rem;
+  }
+
+  .profile-card {
+    padding: 1.5rem 2rem;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 2.25rem;
+  }
+
+  .profile-name {
+    font-size: 1.375rem;
+  }
+
+  /* 설정 리스트를 2열로 */
+  .settings-list,
+  .menu-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .setting-item,
+  .menu-item {
+    border-right: 1px solid var(--border-color);
+    border-bottom: none;
+  }
+
+  .setting-item:nth-child(2n),
+  .menu-item:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .preference {
     padding: 1.5rem 2rem;
     max-width: 600px;

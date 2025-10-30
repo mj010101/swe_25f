@@ -4,6 +4,13 @@
   min-height: calc(100vh - 140px);
 }
 
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
 .device-header {
   margin-bottom: 1.5rem;
 }
@@ -438,8 +445,8 @@
 }
 
 /* Responsive Design */
-/* iPad (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* iPad 세로 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .device {
     padding: 1.5rem 2rem;
   }
@@ -464,8 +471,164 @@
   }
 }
 
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
+/* iPad 가로 (1024px - 1400px) - Horizontal Layout */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  .device {
+    padding: 0.75rem 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+    overflow: hidden;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Floor plan container - stretched horizontally at top */
+  .floorplan-container {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    flex: 1; /* Take remaining space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .floorplan-svg {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Keep aspect ratio and show full image */
+  }
+
+  /* Summary buttons - horizontal layout at bottom */
+  .device-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .summary-item {
+    padding: 1rem 2rem; /* Thin and wide */
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-subtle);
+    transition: all 0.2s ease;
+  }
+
+  .summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glass);
+    border-color: var(--accent-blue);
+  }
+
+  .summary-item svg {
+    color: var(--accent-blue);
+    width: 28px;
+    height: 28px;
+  }
+
+  .summary-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    order: 3; /* Label at the end */
+  }
+
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    order: 2; /* Value in the middle */
+  }
+
+  /* Room detail view - 2 column layout */
+  .room-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    grid-template-areas:
+      "back back"
+      "title title"
+      "devices cameras";
+  }
+
+  .modal-back {
+    grid-area: back;
+  }
+
+  .room-title {
+    grid-area: title;
+    margin-bottom: 0.5rem;
+  }
+
+  .section:first-of-type {
+    grid-area: devices;
+  }
+
+  .section:last-of-type {
+    grid-area: cameras;
+  }
+
+  .device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .camera-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .camera-thumbnail {
+    width: 100px;
+    height: 75px;
+  }
+
+  /* Detail modal - horizontal layout */
+  .detail-modal {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    grid-template-areas:
+      "back back"
+      "preview content";
+  }
+
+  .detail-modal .modal-back {
+    grid-area: back;
+  }
+
+  .detail-modal .camera-preview-large {
+    grid-area: preview;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    margin-bottom: 0;
+  }
+
+  .detail-modal .detail-content {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .detail-icon {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Desktop (1401px+) */
+@media (min-width: 1401px) {
   .device {
     padding: 1.5rem 2rem;
     max-width: 600px;
