@@ -28,61 +28,61 @@ graph TB
         WebClient[Web Client]
         ControlPanel[Control Panel Client]
     end
-    
+
     subgraph "Core Platform"
         Hub[SafeHome Hub]
         Cloud[Cloud Service]
         Config[Configuration Manager]
         Storage[Storage Manager]
     end
-    
+
     subgraph "Security Layer"
         Auth[Authentication Service]
         Authz[Authorization Service]
         SecurityMode[Security Mode Manager]
     end
-    
+
     subgraph "Device Layer"
         Sensors[Sensors]
         Cameras[Cameras]
         SmartDevices[Smart Home Devices]
         Sirens[Internal Sirens]
     end
-    
+
     subgraph "Service Layer"
         Notification[Notification Service]
         Incident[Incident Manager]
         Automation[Automation Rules]
         Media[Media Repository]
     end
-    
+
     subgraph "Emergency Layer"
         Emergency[External Security Service]
         AutoCall[Automated Call Service]
         Panic[Panic Button]
     end
-    
+
     MobileApp --> Hub
     WebClient --> Cloud
     ControlPanel --> Hub
-    
+
     Hub --> Cloud
     Hub --> Config
     Hub --> SecurityMode
     Hub --> Sensors
     Hub --> Cameras
-    
+
     Auth --> Cloud
     Authz --> Auth
-    
+
     SecurityMode --> Sensors
-    
+
     Incident --> Emergency
     Incident --> Notification
-    
+
     Sensors --> Incident
     Cameras --> Media
-    
+
     style Hub fill:#2196F3
     style Cloud fill:#4CAF50
     style Auth fill:#FF9800
@@ -101,7 +101,7 @@ classDiagram
         +validate() boolean
         +handleError(error: Error) void
     }
-    
+
     class Device {
         <<abstract>>
         +deviceId: string
@@ -120,7 +120,7 @@ classDiagram
         +getStatus() DeviceStatus
         +updateFirmware() void
     }
-    
+
     class Sensor {
         <<abstract>>
         +sensorType: string
@@ -134,7 +134,7 @@ classDiagram
         +triggerAlert() void
         +bypass(duration: number) void
     }
-    
+
     class EnvironmentalSensor {
         <<abstract>>
         +threshold: number
@@ -144,7 +144,7 @@ classDiagram
         +checkThreshold() boolean
         +adjustThreshold(newThreshold: number) void
     }
-    
+
     class Media {
         <<abstract>>
         +mediaId: string
@@ -157,7 +157,7 @@ classDiagram
         +download() Blob
         +delete() void
     }
-    
+
     class Notification {
         <<abstract>>
         +notificationId: string
@@ -170,7 +170,7 @@ classDiagram
         +retry() void
         +markAsRead() void
     }
-    
+
     class SystemEvent {
         <<abstract>>
         +eventId: string
@@ -186,7 +186,7 @@ classDiagram
 
     Device <|-- Sensor
     Sensor <|-- EnvironmentalSensor
-    
+
     note for Service "Base service interface\nfor all system services"
     note for Device "Abstract base class\nfor all physical devices"
     note for Sensor "Extends Device with\nsensor-specific capabilities"
@@ -212,7 +212,7 @@ classDiagram
         +updateProfile(profile: UserProfile) void
         +deactivate() void
     }
-    
+
     class Homeowner {
         +ownerId: string
         +homeAddress: string
@@ -222,7 +222,7 @@ classDiagram
         +removeGuest(guestId: string) void
         +grantPermission(userId: string, permission: Permission) void
     }
-    
+
     class Guest {
         +guestId: string
         +invitedBy: string
@@ -233,7 +233,7 @@ classDiagram
         +extendAccess(duration: number) void
         +revokeAccess() void
     }
-    
+
     class AuthenticationService {
         <<Service>>
         -sessionManager: SessionManager
@@ -245,7 +245,7 @@ classDiagram
         +resetPassword(email: string) void
         +verifyEmail(token: string) boolean
     }
-    
+
     class TwoFactorAuthenticationService {
         <<Service>>
         +totpSecret: string
@@ -256,7 +256,7 @@ classDiagram
         +verifyBackupCode(code: string) boolean
         +sendSMS(phoneNumber: string, code: string) void
     }
-    
+
     class VerificationToken {
         +tokenId: string
         +userId: string
@@ -267,7 +267,7 @@ classDiagram
         +validate() boolean
         +markAsUsed() void
     }
-    
+
     class BackupCodes {
         +codes: string[]
         +generatedAt: DateTime
@@ -275,7 +275,7 @@ classDiagram
         +generate() string[]
         +verify(code: string) boolean
     }
-    
+
     class TrustedDevice {
         +deviceId: string
         +userId: string
@@ -285,7 +285,7 @@ classDiagram
         +isActive: boolean
         +revoke() void
     }
-    
+
     class PasswordPolicy {
         +minLength: number
         +requireUppercase: boolean
@@ -296,7 +296,7 @@ classDiagram
         +historyCount: number
         +validate(password: string) boolean
     }
-    
+
     class RateLimitPolicy {
         +maxAttempts: number
         +timeWindow: number
@@ -305,7 +305,7 @@ classDiagram
         +recordAttempt(userId: string) void
         +resetAttempts(userId: string) void
     }
-    
+
     class AuthorizationService {
         <<Service>>
         -roleManager: RoleManager
@@ -314,7 +314,7 @@ classDiagram
         +revokeRole(userId: string, roleId: string) void
         +getUserPermissions(userId: string) Permission[]
     }
-    
+
     class Role {
         +roleId: string
         +roleName: string
@@ -324,7 +324,7 @@ classDiagram
         +addPermission(permission: Permission) void
         +removePermission(permissionId: string) void
     }
-    
+
     class Permission {
         +permissionId: string
         +resource: string
@@ -332,7 +332,7 @@ classDiagram
         +scope: Scope
         +description: string
     }
-    
+
     class Session {
         +sessionId: string
         +userId: string
@@ -348,27 +348,27 @@ classDiagram
 
     Account <|-- Homeowner
     Account <|-- Guest
-    
+
     Service <|-- AuthenticationService
     Service <|-- TwoFactorAuthenticationService
     Service <|-- AuthorizationService
-    
+
     AuthenticationService --> Account : authenticates
     AuthenticationService --> Session : creates
     AuthenticationService --> VerificationToken : uses
-    
+
     TwoFactorAuthenticationService --> BackupCodes : manages
     TwoFactorAuthenticationService --> TrustedDevice : manages
-    
+
     AuthenticationService --> PasswordPolicy : enforces
     AuthenticationService --> RateLimitPolicy : applies
-    
+
     AuthorizationService --> Role : manages
     AuthorizationService --> Permission : checks
-    
+
     Role --> Permission : contains
     Account --> Session : has
-    
+
     note for AuthenticationService "Handles user login,\nlogout, and token management"
     note for TwoFactorAuthenticationService "Provides additional\nsecurity layer"
 ```
@@ -398,7 +398,7 @@ classDiagram
         +updateFirmware() void
         +getSystemStatus() SystemStatus
     }
-    
+
     class CloudService {
         <<Service>>
         -apiEndpoint: string
@@ -411,7 +411,7 @@ classDiagram
         +backupData() void
         +restoreData(backupId: string) void
     }
-    
+
     class MobileAppClient {
         +appVersion: string
         +platform: Platform
@@ -423,7 +423,7 @@ classDiagram
         +sendCommand(command: Command) void
         +receiveNotification(notification: Notification) void
     }
-    
+
     class WebClient {
         +sessionId: string
         +browser: string
@@ -431,7 +431,7 @@ classDiagram
         +connect() void
         +navigate(route: string) void
     }
-    
+
     class ControlPanelClient {
         +panelId: string
         +location: string
@@ -440,7 +440,7 @@ classDiagram
         +disarmSystem() void
         +triggerPanic() void
     }
-    
+
     class ConfigurationManager {
         <<Service>>
         -configCache: Map~string, Object~
@@ -453,7 +453,7 @@ classDiagram
         +applyConfiguration(config: Configuration) void
         +exportConfiguration() string
     }
-    
+
     class SystemSettings {
         +language: string
         +timezone: string
@@ -463,7 +463,7 @@ classDiagram
         +notifications: NotificationSettings
         +privacy: PrivacySettings
     }
-    
+
     class StorageManager {
         <<Service>>
         -localStorage: LocalStorage
@@ -474,7 +474,7 @@ classDiagram
         +clear() void
         +getStorageUsage() StorageStats
     }
-    
+
     class ActivityLog {
         <<CloudService>>
         -logs: LogRecord[]
@@ -484,7 +484,7 @@ classDiagram
         +exportLogs(format: string) File
         +purgeLogs(olderThan: DateTime) void
     }
-    
+
     class LogExportService {
         <<Service>>
         +exportToCSV(logs: LogRecord[]) File
@@ -492,7 +492,7 @@ classDiagram
         +exportToPDF(logs: LogRecord[]) File
         +scheduleExport(schedule: Schedule) void
     }
-    
+
     class SystemStatusService {
         <<Service>>
         +getHubStatus() HubStatus
@@ -500,7 +500,7 @@ classDiagram
         +getCloudStatus() CloudStatus
         +getSystemHealth() HealthReport
     }
-    
+
     class ConnectivityEvent {
         <<SystemEvent>>
         +connectionType: string
@@ -508,7 +508,7 @@ classDiagram
         +isConnected: boolean
         +reason: string
     }
-    
+
     class HubConnectivityMonitor {
         <<Service>>
         -pingInterval: number
@@ -517,7 +517,7 @@ classDiagram
         +handleReconnect() void
         +getConnectionQuality() Quality
     }
-    
+
     class LogRecord {
         +logId: string
         +timestamp: DateTime
@@ -528,7 +528,7 @@ classDiagram
         +deviceId: string
         +metadata: Object
     }
-    
+
     class LogSyncBatch {
         +batchId: string
         +logs: LogRecord[]
@@ -544,25 +544,25 @@ classDiagram
     Service <|-- LogExportService
     Service <|-- SystemStatusService
     Service <|-- HubConnectivityMonitor
-    
+
     CloudService <|-- ActivityLog
     SystemEvent <|-- ConnectivityEvent
-    
+
     SafeHomeHub --> CloudService : uses
     SafeHomeHub --> ConfigurationManager : uses
     SafeHomeHub --> StorageManager : uses
-    
+
     MobileAppClient --> SafeHomeHub : connects
     WebClient --> CloudService : connects
     ControlPanelClient --> SafeHomeHub : controls
-    
+
     ConfigurationManager --> SystemSettings : manages
     ActivityLog --> LogRecord : stores
     ActivityLog --> LogExportService : uses
-    
+
     HubConnectivityMonitor --> ConnectivityEvent : generates
     ActivityLog --> LogSyncBatch : creates
-    
+
     note for SafeHomeHub "Central hub that manages\nall devices and services"
     note for CloudService "Provides cloud connectivity\nand data synchronization"
 ```
@@ -585,7 +585,7 @@ classDiagram
         +autoArm: boolean
         +schedule: Schedule
     }
-    
+
     class SecurityModeProfile {
         +profileId: string
         +profileName: string
@@ -596,7 +596,7 @@ classDiagram
         +activate() void
         +deactivate() void
     }
-    
+
     class SafetyZone {
         +zoneId: string
         +zoneName: string
@@ -607,7 +607,7 @@ classDiagram
         +arm() void
         +disarm() void
     }
-    
+
     class SecurityArmingState {
         <<enumeration>>
         DISARMED
@@ -618,7 +618,7 @@ classDiagram
         EXIT_DELAY
         ALARMED
     }
-    
+
     class SecurityModeManager {
         -currentMode: SecurityMode
         -armingState: SecurityArmingState
@@ -636,7 +636,7 @@ classDiagram
         +addZone(zone: SafetyZone) void
         +removeZone(zoneId: string) void
     }
-    
+
     class SensorBypassList {
         +bypassedSensors: Map~string, BypassRule~
         +addBypass(sensorId: string, rule: BypassRule) void
@@ -644,7 +644,7 @@ classDiagram
         +clearAll() void
         +isActive(sensorId: string) boolean
     }
-    
+
     class BypassRule {
         +ruleId: string
         +sensorId: string
@@ -659,13 +659,13 @@ classDiagram
     SecurityModeManager --> SecurityArmingState : maintains
     SecurityModeManager --> SafetyZone : controls
     SecurityModeManager --> SensorBypassList : uses
-    
+
     SecurityModeProfile --> SecurityMode : contains
     SafetyZone --> Sensor : groups
-    
+
     SensorBypassList --> BypassRule : contains
     BypassRule --> Sensor : references
-    
+
     note for SecurityModeManager "Core component managing\nsecurity states and modes"
     note for SecurityArmingState "Represents current\nsystem arming state"
 ```
@@ -686,7 +686,7 @@ classDiagram
         +detectMotion() void
         +resetCount() void
     }
-    
+
     class WindowDoorSensor {
         <<Sensor>>
         +isOpen: boolean
@@ -696,7 +696,7 @@ classDiagram
         +notifyOnClose: boolean
         +getState() ContactState
     }
-    
+
     class FireSmokeSensor {
         <<EnvironmentalSensor>>
         +smokeLevel: number
@@ -706,7 +706,7 @@ classDiagram
         +testAlarm() void
         +silence() void
     }
-    
+
     class COSensor {
         <<EnvironmentalSensor>>
         +coLevel: number
@@ -715,7 +715,7 @@ classDiagram
         +lastTest: DateTime
         +getCOLevel() number
     }
-    
+
     class GasSensor {
         <<EnvironmentalSensor>>
         +gasType: string
@@ -724,7 +724,7 @@ classDiagram
         +shutoffValve: boolean
         +triggerShutoff() void
     }
-    
+
     class LeakSensor {
         <<EnvironmentalSensor>>
         +moistureLevel: number
@@ -732,7 +732,7 @@ classDiagram
         +leakLocation: string
         +alertThreshold: number
     }
-    
+
     class AirQualitySensor {
         <<EnvironmentalSensor>>
         +pm25: number
@@ -744,7 +744,7 @@ classDiagram
         +aqi: number
         +getAQI() number
     }
-    
+
     class InternalSiren {
         <<Device>>
         +volume: number
@@ -756,7 +756,7 @@ classDiagram
         +test() void
         +setVolume(level: number) void
     }
-    
+
     class SmartHomeDevice {
         <<Device>>
         +protocol: string
@@ -765,7 +765,7 @@ classDiagram
         +lastCommand: Command
         +sendCommand(command: Command) void
     }
-    
+
     class SmartLight {
         <<SmartHomeDevice>>
         +brightness: number
@@ -778,7 +778,7 @@ classDiagram
         +setColor(color: Color) void
         +dim(percentage: number) void
     }
-    
+
     class LightGroup {
         +groupId: string
         +groupName: string
@@ -787,7 +787,7 @@ classDiagram
         +turnAllOff() void
         +setGroupBrightness(level: number) void
     }
-    
+
     class VentilationSystem {
         <<Device>>
         +fanSpeed: number
@@ -799,7 +799,7 @@ classDiagram
         +setSpeed(speed: number) void
         +setMode(mode: VentilationMode) void
     }
-    
+
     class SmartMeter {
         <<Device>>
         +meterType: string
@@ -810,7 +810,7 @@ classDiagram
         +getUsageHistory() PowerReading[]
         +resetMeter() void
     }
-    
+
     class PowerReading {
         +timestamp: DateTime
         +value: number
@@ -820,23 +820,23 @@ classDiagram
 
     Sensor <|-- MotionSensor
     Sensor <|-- WindowDoorSensor
-    
+
     EnvironmentalSensor <|-- FireSmokeSensor
     EnvironmentalSensor <|-- COSensor
     EnvironmentalSensor <|-- GasSensor
     EnvironmentalSensor <|-- LeakSensor
     EnvironmentalSensor <|-- AirQualitySensor
-    
+
     Device <|-- InternalSiren
     Device <|-- SmartHomeDevice
     Device <|-- VentilationSystem
     Device <|-- SmartMeter
-    
+
     SmartHomeDevice <|-- SmartLight
-    
+
     LightGroup --> SmartLight : controls
     SmartMeter --> PowerReading : produces
-    
+
     note for MotionSensor "Detects movement\nwith pet immunity option"
     note for FireSmokeSensor "Critical life safety sensor"
     note for SmartLight "Controllable lighting\nwith color support"
@@ -867,7 +867,7 @@ classDiagram
         +panTilt(pan: number, tilt: number) void
         +zoom(level: number) void
     }
-    
+
     class SoundClassifier {
         <<Service>>
         -model: MLModel
@@ -876,7 +876,7 @@ classDiagram
         +detectGlassBreak(audio: AudioStream) boolean
         +trainModel(samples: AudioSample[]) void
     }
-    
+
     class BarkingDetector {
         <<Service>>
         -threshold: number
@@ -884,7 +884,7 @@ classDiagram
         +countBarks(audio: AudioStream, duration: number) number
         +setThreshold(level: number) void
     }
-    
+
     class TwoWayAudioService {
         <<Service>>
         -inputStream: AudioStream
@@ -894,7 +894,7 @@ classDiagram
         +speak(audio: AudioData) void
         +listen() AudioStream
     }
-    
+
     class AudioStream {
         +streamId: string
         +codec: string
@@ -905,7 +905,7 @@ classDiagram
         +start() void
         +stop() void
     }
-    
+
     class MediaRepository {
         -storage: StorageRepository
         -indexDb: Database
@@ -915,7 +915,7 @@ classDiagram
         +queryMedia(filters: MediaFilter) Media[]
         +getStorageStats() StorageStats
     }
-    
+
     class StorageRepository {
         +totalCapacity: number
         +usedSpace: number
@@ -924,7 +924,7 @@ classDiagram
         +allocateSpace(size: number) boolean
         +cleanupOldMedia() void
     }
-    
+
     class Snapshot {
         <<Media>>
         +cameraId: string
@@ -932,7 +932,7 @@ classDiagram
         +trigger: string
         +thumbnail: Blob
     }
-    
+
     class Recording {
         <<Media>>
         +cameraId: string
@@ -948,25 +948,25 @@ classDiagram
     }
 
     Device <|-- Camera
-    
+
     Service <|-- SoundClassifier
     Service <|-- BarkingDetector
     Service <|-- TwoWayAudioService
-    
+
     Media <|-- Snapshot
     Media <|-- Recording
-    
+
     Camera --> Snapshot : captures
     Camera --> Recording : creates
     Camera --> TwoWayAudioService : uses
-    
+
     SoundClassifier --> AudioStream : analyzes
     BarkingDetector --> AudioStream : monitors
     TwoWayAudioService --> AudioStream : manages
-    
+
     MediaRepository --> Media : stores
     MediaRepository --> StorageRepository : uses
-    
+
     note for Camera "Multi-functional camera\nwith PTZ and audio"
     note for MediaRepository "Central storage for\nall media files"
 ```
@@ -987,7 +987,7 @@ classDiagram
         +data: Object
         +actionButtons: Button[]
     }
-    
+
     class SMSMessage {
         <<Notification>>
         +phoneNumber: string
@@ -995,7 +995,7 @@ classDiagram
         +sender: string
         +deliveryStatus: DeliveryStatus
     }
-    
+
     class NotificationService {
         <<Service>>
         -queue: NotificationQueue
@@ -1006,7 +1006,7 @@ classDiagram
         +cancelScheduled(notificationId: string) void
         +getDeliveryStatus(notificationId: string) DeliveryStatus
     }
-    
+
     class NotificationPolicy {
         +policyId: string
         +userId: string
@@ -1018,7 +1018,7 @@ classDiagram
         +shouldSend(notification: Notification) boolean
         +getChannels() Channel[]
     }
-    
+
     class AutomationRule {
         <<CloudService>>
         +ruleId: string
@@ -1033,7 +1033,7 @@ classDiagram
         +evaluate() boolean
         +execute() void
     }
-    
+
     class QuietHoursPolicy {
         <<AutomationRule>>
         +startTime: Time
@@ -1045,19 +1045,19 @@ classDiagram
 
     Notification <|-- PushNotification
     Notification <|-- SMSMessage
-    
+
     Service <|-- NotificationService
     CloudService <|-- AutomationRule
     AutomationRule <|-- QuietHoursPolicy
-    
+
     NotificationService --> Notification : sends
     NotificationService --> NotificationPolicy : checks
-    
+
     NotificationPolicy --> QuietHoursPolicy : contains
     NotificationPolicy --> SystemEvent : evaluates
-    
+
     AutomationRule --> SystemEvent : triggers on
-    
+
     note for NotificationService "Manages all notification\ndelivery channels"
     note for AutomationRule "User-defined automation\nrules and schedules"
 ```
@@ -1080,7 +1080,7 @@ classDiagram
         +resolvedAt: DateTime
         +notes: string
     }
-    
+
     class LifeSafetyEvent {
         <<SystemEvent>>
         +eventType: LifeSafetyType
@@ -1089,7 +1089,7 @@ classDiagram
         +emergencyServicesCalled: boolean
         +casualties: number
     }
-    
+
     class BarkingEvent {
         <<SystemEvent>>
         +duration: number
@@ -1097,7 +1097,7 @@ classDiagram
         +location: string
         +isExcessive: boolean
     }
-    
+
     class IncidentManager {
         <<Service>>
         -activeIncidents: Alarm[]
@@ -1109,7 +1109,7 @@ classDiagram
         +getActiveIncidents() Alarm[]
         +notifyEmergencyServices(incident: Alarm) void
     }
-    
+
     class ExternalSecurityService {
         <<Service>>
         +serviceName: string
@@ -1120,7 +1120,7 @@ classDiagram
         +requestDispatch(location: string, incidentType: string) void
         +getStatus() ServiceStatus
     }
-    
+
     class AutomatedCallService {
         <<Service>>
         -callQueue: Queue
@@ -1128,7 +1128,7 @@ classDiagram
         +playRecording(recording: AudioFile) void
         +getCallStatus(callId: string) CallStatus
     }
-    
+
     class PanicButton {
         +buttonId: string
         +location: string
@@ -1143,19 +1143,19 @@ classDiagram
     SystemEvent <|-- Alarm
     SystemEvent <|-- LifeSafetyEvent
     SystemEvent <|-- BarkingEvent
-    
+
     Service <|-- IncidentManager
     Service <|-- ExternalSecurityService
     Service <|-- AutomatedCallService
-    
+
     IncidentManager --> Alarm : manages
     IncidentManager --> ExternalSecurityService : notifies
     IncidentManager --> AutomatedCallService : uses
-    
+
     PanicButton --> Alarm : triggers
-    
+
     LifeSafetyEvent --> ExternalSecurityService : requires
-    
+
     note for IncidentManager "Central incident management\nand response coordination"
     note for PanicButton "Emergency trigger for\nimmediate response"
 ```
@@ -1176,7 +1176,7 @@ classDiagram
         +validateDevice(device: Device) boolean
         +registerDevice(device: Device, hub: SafeHomeHub) void
     }
-    
+
     class PairingSession {
         +sessionId: string
         +deviceType: string
@@ -1193,13 +1193,13 @@ classDiagram
     }
 
     Service <|-- DeviceOnboardingService
-    
+
     DeviceOnboardingService --> PairingSession : creates
     DeviceOnboardingService --> Device : registers
     DeviceOnboardingService --> SafeHomeHub : registers with
-    
+
     PairingSession --> Device : discovers
-    
+
     note for DeviceOnboardingService "Manages device discovery\nand pairing process"
     note for PairingSession "Represents an active\npairing session"
 ```
@@ -1224,7 +1224,7 @@ classDiagram
         +validate() boolean
         +retry() void
     }
-    
+
     class Request {
         <<DTO>>
         +requestId: string
@@ -1234,7 +1234,7 @@ classDiagram
         +body: Object
         +timestamp: DateTime
     }
-    
+
     class Report {
         <<CloudService>>
         +reportId: string
@@ -1250,10 +1250,10 @@ classDiagram
     }
 
     CloudService <|-- Report
-    
+
     SafeHomeHub --> Command : executes
     Command --> Device : controls
-    
+
     note for Command "Represents executable\ncommands for devices"
     note for Report "Generates various\nsystem reports"
 ```
@@ -1267,89 +1267,89 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     %% Core Abstractions
     class Service
     class Device
     class Sensor
     class SystemEvent
-    
+
     %% Actors
     class Account
     class Homeowner
     class Guest
-    
+
     %% Core Platform
     class SafeHomeHub {
         +registerDevice()
         +executeCommand()
         +syncWithCloud()
     }
-    
+
     class CloudService {
         +syncData()
         +backupData()
     }
-    
+
     %% Security
     class AuthenticationService
     class AuthorizationService
     class SecurityModeManager
-    
+
     %% Devices
     class Camera
     class MotionSensor
     class FireSmokeSensor
     class SmartLight
-    
+
     %% Services
     class NotificationService
     class IncidentManager
     class MediaRepository
     class DeviceOnboardingService
-    
+
     %% Events
     class Alarm
     class LifeSafetyEvent
-    
+
     %% Relationships
     Account <|-- Homeowner
     Account <|-- Guest
-    
+
     Device <|-- Sensor
     Device <|-- Camera
     Device <|-- SmartLight
-    
+
     Sensor <|-- MotionSensor
     Sensor <|-- FireSmokeSensor
-    
+
     SystemEvent <|-- Alarm
     SystemEvent <|-- LifeSafetyEvent
-    
+
     Service <|-- AuthenticationService
     Service <|-- CloudService
     Service <|-- NotificationService
     Service <|-- IncidentManager
     Service <|-- DeviceOnboardingService
-    
+
     SafeHomeHub --> Device : manages
     SafeHomeHub --> CloudService : uses
     SafeHomeHub --> SecurityModeManager : contains
-    
+
     SecurityModeManager --> Sensor : monitors
-    
+
     Homeowner --> SafeHomeHub : owns
     Guest --> SafeHomeHub : accesses
-    
+
     AuthenticationService --> Account : authenticates
     AuthorizationService --> Account : authorizes
-    
+
     Camera --> MediaRepository : stores media
-    
+
     Sensor --> Alarm : triggers
     IncidentManager --> Alarm : handles
     IncidentManager --> NotificationService : uses
-    
+
     DeviceOnboardingService --> Device : registers
     DeviceOnboardingService --> SafeHomeHub : adds to
 ```
@@ -1370,7 +1370,7 @@ graph LR
     B -->|uses| K[Security Mode Manager]
     K -->|controls| E
     A -->|authenticated by| L[Auth Service]
-    
+
     style B fill:#2196F3
     style D fill:#4CAF50
     style H fill:#F44336
@@ -1386,49 +1386,49 @@ graph TB
         UI2[Web Client]
         UI3[Control Panel]
     end
-    
+
     subgraph "Application Layer"
         SVC1[Authentication Service]
         SVC2[Notification Service]
         SVC3[Incident Manager]
         SVC4[Device Onboarding]
     end
-    
+
     subgraph "Domain Layer"
         DOM1[Security Mode Manager]
         DOM2[Configuration Manager]
         DOM3[Media Repository]
         DOM4[Automation Rules]
     end
-    
+
     subgraph "Infrastructure Layer"
         INF1[SafeHome Hub]
         INF2[Cloud Service]
         INF3[Storage Manager]
         INF4[WebSocket Manager]
     end
-    
+
     subgraph "Device Layer"
         DEV1[Sensors]
         DEV2[Cameras]
         DEV3[Smart Devices]
         DEV4[Sirens]
     end
-    
+
     UI1 --> SVC1
     UI2 --> SVC2
     UI3 --> SVC3
-    
+
     SVC1 --> DOM1
     SVC2 --> DOM2
     SVC3 --> DOM3
     SVC4 --> DOM4
-    
+
     DOM1 --> INF1
     DOM2 --> INF2
     DOM3 --> INF3
     DOM4 --> INF4
-    
+
     INF1 --> DEV1
     INF1 --> DEV2
     INF1 --> DEV3
@@ -1441,19 +1441,19 @@ graph TB
 
 ### Implementation Summary
 
-| Category | Classes | Status |
-|----------|---------|--------|
-| **Base Classes** | 7 | Abstract |
-| **Authentication & Authorization** | 13 | 🔴 Not Implemented |
-| **Core Platform** | 14 | 🔴 Not Implemented |
-| **Security Modes** | 7 | 🔴 Not Implemented |
-| **Devices & Sensors** | 15 | 🔴 Not Implemented |
-| **Surveillance & Media** | 9 | 🔴 Not Implemented |
-| **Notifications & Automation** | 6 | 🔴 Not Implemented |
-| **Incidents & Emergency** | 6 | 🔴 Not Implemented |
-| **Device Onboarding** | 2 | 🔴 Not Implemented |
-| **Commands & Reports** | 3 | 🔴 Not Implemented |
-| **TOTAL** | **82** | — |
+| Category                           | Classes | Status             |
+| ---------------------------------- | ------- | ------------------ |
+| **Base Classes**                   | 7       | Abstract           |
+| **Authentication & Authorization** | 13      | 🔴 Not Implemented |
+| **Core Platform**                  | 14      | 🔴 Not Implemented |
+| **Security Modes**                 | 7       | 🔴 Not Implemented |
+| **Devices & Sensors**              | 15      | 🔴 Not Implemented |
+| **Surveillance & Media**           | 9       | 🔴 Not Implemented |
+| **Notifications & Automation**     | 6       | 🔴 Not Implemented |
+| **Incidents & Emergency**          | 6       | 🔴 Not Implemented |
+| **Device Onboarding**              | 2       | 🔴 Not Implemented |
+| **Commands & Reports**             | 3       | 🔴 Not Implemented |
+| **TOTAL**                          | **82**  | —                  |
 
 ### Relationship Types
 
@@ -1467,34 +1467,42 @@ graph TB
 ## Design Patterns Used
 
 ### 1. **Abstract Factory Pattern**
+
 - `Device` and `Sensor` abstract classes
 - Concrete implementations for specific device types
 
 ### 2. **Observer Pattern**
+
 - `SystemEvent` and event listeners
 - Notification distribution system
 
 ### 3. **Strategy Pattern**
+
 - `SecurityMode` with different arming strategies
 - `NotificationPolicy` with various delivery strategies
 
 ### 4. **Singleton Pattern**
+
 - `SafeHomeHub` (single hub per home)
 - `CloudService` (single cloud connection)
 
 ### 5. **Command Pattern**
+
 - `Command` class for device control
 - Command queue management
 
 ### 6. **Repository Pattern**
+
 - `MediaRepository` for media storage
 - `StorageRepository` for data persistence
 
 ### 7. **Service Layer Pattern**
+
 - All `Service` classes
 - Clear separation of business logic
 
 ### 8. **Factory Method Pattern**
+
 - `DeviceOnboardingService` for device creation
 - `NotificationService` for notification creation
 
@@ -1533,4 +1541,3 @@ graph TB
 **Author:** SafeHome Development Team  
 **Total Classes:** 82  
 **Total Diagrams:** 13
-

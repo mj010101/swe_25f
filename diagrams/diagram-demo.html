@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafeHome System Architecture - Class Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-button {
+        padding: 12px 24px;
+        border: 2px solid #e0e0e0;
+        background: white;
+        color: #333;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .tab-button:hover {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .tab-button.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .diagram-section {
+        display: none;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .diagram-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .diagram-section h2 {
+        font-size: 1.8rem;
+        color: #667eea;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+      }
+
+      .mermaid {
+        background: #fafafa;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+
+      footer {
+        margin-top: 60px;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-card .number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-card .label {
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      .legend {
+        text-align: center;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      .legend h3 {
+        margin-bottom: 15px;
+        color: #333;
+        font-size: 1.2rem;
+      }
+
+      .legend-items {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+      }
+
+      .badge {
+        font-size: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 1.8rem;
+        }
+
+        .tabs {
+          flex-direction: column;
+        }
+
+        .tab-button {
+          width: 100%;
+          text-align: center;
+        }
+
+        .stat-card .number {
+          font-size: 2rem;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #1a1a1a;
+          color: #ffffff;
+        }
+
+        .tabs,
+        .diagram-section,
+        footer {
+          background: #2d2d2d;
+        }
+
+        .tab-button {
+          background: #2d2d2d;
+          color: #ffffff;
+          border-color: #444;
+        }
+
+        .mermaid {
+          background: #1a1a1a;
+        }
+
+        .legend {
+          background: #1a1a1a;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>SafeHome System Architecture</h1>
+        <p>Comprehensive UML Class Diagrams for the Entire Security System</p>
+      </header>
+
+      <div class="tabs">
+        <button class="tab-button active" data-tab="overview">
+          System Overview
+        </button>
+        <button class="tab-button" data-tab="base">Base Classes</button>
+        <button class="tab-button" data-tab="auth">Authentication</button>
+        <button class="tab-button" data-tab="platform">Core Platform</button>
+        <button class="tab-button" data-tab="security">Security Modes</button>
+        <button class="tab-button" data-tab="devices">Devices & Sensors</button>
+        <button class="tab-button" data-tab="surveillance">Surveillance</button>
+        <button class="tab-button" data-tab="notifications">
+          Notifications
+        </button>
+        <button class="tab-button" data-tab="incidents">Incidents</button>
+        <button class="tab-button" data-tab="integration">Integration</button>
+      </div>
+
+      <div id="overview" class="diagram-section active">
+        <h2>System Architecture Overview</h2>
+        <div class="mermaid">
+          graph TB
+              subgraph "Frontend Layer"
+                  MobileApp[Mobile App Client]
+                  WebClient[Web Client]
+                  ControlPanel[Control Panel Client]
+              end
+
+              subgraph "Core Platform"
+                  Hub[SafeHome Hub]
+                  Cloud[Cloud Service]
+                  Config[Configuration Manager]
+                  Storage[Storage Manager]
+              end
+
+              subgraph "Security Layer"
+                  Auth[Authentication Service]
+                  Authz[Authorization Service]
+                  SecurityMode[Security Mode Manager]
+              end
+
+              subgraph "Device Layer"
+                  Sensors[Sensors]
+                  Cameras[Cameras]
+                  SmartDevices[Smart Home Devices]
+                  Sirens[Internal Sirens]
+              end
+
+              subgraph "Service Layer"
+                  Notification[Notification Service]
+                  Incident[Incident Manager]
+                  Automation[Automation Rules]
+                  Media[Media Repository]
+              end
+
+              subgraph "Emergency Layer"
+                  Emergency[External Security Service]
+                  AutoCall[Automated Call Service]
+                  Panic[Panic Button]
+              end
+
+              MobileApp --> Hub
+              WebClient --> Cloud
+              ControlPanel --> Hub
+
+              Hub --> Cloud
+              Hub --> Config
+              Hub --> SecurityMode
+              Hub --> Sensors
+              Hub --> Cameras
+
+              Auth --> Cloud
+              Authz --> Auth
+
+              SecurityMode --> Sensors
+
+              Incident --> Emergency
+              Incident --> Notification
+
+              Sensors --> Incident
+              Cameras --> Media
+
+              style Hub fill:#2196F3
+              style Cloud fill:#4CAF50
+              style Auth fill:#FF9800
+              style Incident fill:#F44336
+        </div>
+      </div>
+
+      <div id="base" class="diagram-section">
+        <h2>1. Base Classes & Common Abstractions</h2>
+        <div class="mermaid">
+          classDiagram
+              class Service {
+                  <<abstract>>
+                  +execute() void
+                  +validate() boolean
+                  +handleError(error: Error) void
+              }
+
+              class Device {
+                  <<abstract>>
+                  +deviceId: string
+                  +name: string
+                  +model: string
+                  +firmwareVersion: string
+                  +batteryLevel: number
+                  +isOnline: boolean
+                  +powerOn() void
+                  +powerOff() void
+                  +getStatus() DeviceStatus
+              }
+
+              class Sensor {
+                  <<abstract>>
+                  +sensorType: string
+                  +sensitivity: number
+                  +isBypassed: boolean
+                  +readValue() SensorReading
+                  +calibrate() void
+                  +triggerAlert() void
+              }
+
+              Device <|-- Sensor
+
+              note for Service "Base service interface for all system services"
+              note for Device "Abstract base class for all physical devices"
+        </div>
+      </div>
+
+      <div id="auth" class="diagram-section">
+        <h2>2. Authentication & Authorization</h2>
+        <div class="mermaid">
+          classDiagram
+              class Account {
+                  +accountId: string
+                  +email: string
+                  +passwordHash: string
+                  +authenticate(password: string) boolean
+                  +changePassword() void
+              }
+
+              class Homeowner {
+                  +ownerId: string
+                  +homeAddress: string
+                  +emergencyContacts: Contact[]
+                  +addGuest(guest: Guest) void
+              }
+
+              class AuthenticationService {
+                  <<Service>>
+                  +login(email, password) AuthToken
+                  +logout(token) void
+                  +validateToken(token) boolean
+                  +refreshToken() AuthToken
+              }
+
+              Account <|-- Homeowner
+              Service <|-- AuthenticationService
+              AuthenticationService --> Account : authenticates
+        </div>
+      </div>
+
+      <div id="platform" class="diagram-section">
+        <h2>3. Core Platform</h2>
+        <div class="mermaid">
+          classDiagram
+              class SafeHomeHub {
+                  +hubId: string
+                  +connectedDevices: Device[]
+                  +registerDevice(device) void
+                  +executeCommand(command) void
+                  +syncWithCloud() void
+              }
+
+              class CloudService {
+                  <<Service>>
+                  +connect() void
+                  +syncData(data) void
+                  +backupData() void
+              }
+
+              SafeHomeHub --> CloudService : uses
+        </div>
+      </div>
+
+      <div id="security" class="diagram-section">
+        <h2>4. Security Modes</h2>
+        <div class="mermaid">
+          classDiagram
+              class SecurityMode {
+                  +modeId: string
+                  +modeName: string
+                  +activeSensors: Sensor[]
+                  +entryDelay: number
+                  +exitDelay: number
+              }
+
+              class SecurityModeManager {
+                  -currentMode: SecurityMode
+                  +armSystem(mode) void
+                  +disarmSystem(code) boolean
+                  +triggerAlarm(reason) void
+              }
+
+              SecurityModeManager --> SecurityMode : manages
+        </div>
+      </div>
+
+      <div id="devices" class="diagram-section">
+        <h2>5. Devices & Sensors</h2>
+        <div class="mermaid">
+          classDiagram
+              class MotionSensor {
+                  <<Sensor>>
+                  +detectionAngle: number
+                  +petImmune: boolean
+                  +detectMotion() void
+              }
+
+              class FireSmokeSensor {
+                  <<Sensor>>
+                  +smokeLevel: number
+                  +isFireDetected: boolean
+                  +testAlarm() void
+              }
+
+              class SmartLight {
+                  <<Device>>
+                  +brightness: number
+                  +isOn: boolean
+                  +turnOn() void
+                  +setBrightness(level) void
+              }
+
+              Sensor <|-- MotionSensor
+              Sensor <|-- FireSmokeSensor
+              Device <|-- SmartLight
+        </div>
+      </div>
+
+      <div id="surveillance" class="diagram-section">
+        <h2>6. Surveillance & Media</h2>
+        <div class="mermaid">
+          classDiagram
+              class Camera {
+                  <<Device>>
+                  +resolution: Resolution
+                  +nightVision: boolean
+                  +startRecording() void
+                  +captureSnapshot() Snapshot
+              }
+
+              class MediaRepository {
+                  +storeMedia(media) string
+                  +retrieveMedia(id) Media
+                  +deleteMedia(id) void
+              }
+
+              Device <|-- Camera
+              Camera --> MediaRepository : stores to
+        </div>
+      </div>
+
+      <div id="notifications" class="diagram-section">
+        <h2>7. Notifications</h2>
+        <div class="mermaid">
+          classDiagram
+              class NotificationService {
+                  <<Service>>
+                  +sendNotification(notification) void
+                  +sendBatch(notifications) void
+                  +scheduleNotification(notification, time) void
+              }
+
+              class PushNotification {
+                  +title: string
+                  +body: string
+                  +badge: number
+              }
+
+              Service <|-- NotificationService
+              NotificationService --> PushNotification : sends
+        </div>
+      </div>
+
+      <div id="incidents" class="diagram-section">
+        <h2>8. Incidents & Emergency</h2>
+        <div class="mermaid">
+          classDiagram
+              class Alarm {
+                  +alarmId: string
+                  +alarmType: AlarmType
+                  +triggeredBy: string
+                  +isActive: boolean
+              }
+
+              class IncidentManager {
+                  <<Service>>
+                  +createIncident(event) Alarm
+                  +verifyIncident(id) boolean
+                  +escalateIncident(id) void
+                  +notifyEmergencyServices(incident) void
+              }
+
+              Service <|-- IncidentManager
+              IncidentManager --> Alarm : manages
+        </div>
+      </div>
+
+      <div id="integration" class="diagram-section">
+        <h2>System Integration</h2>
+        <div class="mermaid">
+          graph LR
+              A[Homeowner] -->|owns| B[SafeHome Hub]
+              B -->|manages| C[Devices]
+              B -->|connects to| D[Cloud Service]
+              C -->|includes| E[Sensors]
+              C -->|includes| F[Cameras]
+              E -->|triggers| G[Alarms]
+              G -->|handled by| H[Incident Manager]
+              H -->|sends| I[Notifications]
+
+              style B fill:#2196F3
+              style D fill:#4CAF50
+              style H fill:#F44336
+        </div>
+      </div>
+
+      <footer>
+        <div class="stats">
+          <div class="stat-card">
+            <div class="number">82</div>
+            <div class="label">Total Classes</div>
+          </div>
+          <div class="stat-card">
+            <div class="number">13</div>
+            <div class="label">Total Diagrams</div>
+          </div>
+          <div class="stat-card">
+            <div class="number">10</div>
+            <div class="label">Categories</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <h3>Implementation Status</h3>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span class="badge">🟢</span>
+              <span>Implemented</span>
+            </div>
+            <div class="legend-item">
+              <span class="badge">🔴</span>
+              <span>Not Implemented</span>
+            </div>
+            <div class="legend-item">
+              <span class="badge">🟡</span>
+              <span>Partial</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      // Initialize Mermaid
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "default",
+        securityLevel: "loose",
+      });
+
+      // Tab switching
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const sections = document.querySelectorAll(".diagram-section");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // Remove active class from all buttons and sections
+          tabButtons.forEach((btn) => btn.classList.remove("active"));
+          sections.forEach((section) => section.classList.remove("active"));
+
+          // Add active class to clicked button
+          button.classList.add("active");
+
+          // Show corresponding section
+          const tabId = button.getAttribute("data-tab");
+          const section = document.getElementById(tabId);
+          if (section) {
+            section.classList.add("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+
+
