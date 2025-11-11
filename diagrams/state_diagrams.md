@@ -73,53 +73,62 @@ graph TB
 
 ```mermaid
 stateDiagram-v2
-    [*] --> DISARMED: System Initialize
+    [*] --> DISARMED
 
-    DISARMED --> ARMING: armZone() / armAllZones()
-    ARMING --> ARMED: Exit delay expires
-    ARMING --> DISARMED: disarmZone() / cancelArm()
+    state DISARMED {
+        [*] --> Idle
+        Idle: Set currentMode = DISARMED
+        Idle: Set armingState = DISARMED
+        Idle: Clear bypassedSensors
+        Idle: Stop all timers
+    }
 
-    ARMED --> ENTRY_DELAY: Sensor triggered (entry/exit zone)
-    ARMED --> ALARMING: Sensor triggered (non-entry zone)
+    state ARMING {
+        [*] --> Countdown
+        Countdown: Start exit delay timer
+        Countdown: Display countdown to user
+        Countdown: Allow sensor bypass
+        Countdown: Notify pending arm
+    }
+
+    state ARMED {
+        [*] --> Monitoring
+        Monitoring: Monitor all armed zones
+        Monitoring: Listen for sensor events
+        Monitoring: Check sensor bypass status
+        Monitoring: Validate zone membership
+    }
+
+    state ENTRY_DELAY {
+        [*] --> Warning
+        Warning: Start entry countdown timer
+        Warning: Display warning to user
+        Warning: Send notifications
+        Warning: Allow disarm attempt
+    }
+
+    state ALARMING {
+        [*] --> Alerting
+        Alerting: Activate siren
+        Alerting: Send emergency notifications
+        Alerting: Trigger alarm verification
+        Alerting: Log alarm event
+    }
+
+    DISARMED --> ARMING: [User calls armZone() or armAllZones()]
+    ARMING --> ARMED: [exitDelaySeconds timer expires]
+    ARMING --> DISARMED: [User calls disarmZone() or cancelArm()]
+
+    ARMED --> ENTRY_DELAY: [Sensor triggered] AND [Zone has entryExit=true]
+    ARMED --> ALARMING: [Sensor triggered] AND [Zone has entryExit=false]
     
-    ENTRY_DELAY --> ARMED: User disarms in time
-    ENTRY_DELAY --> ALARMING: Entry delay expires
-    ENTRY_DELAY --> DISARMED: User successfully disarms
+    ENTRY_DELAY --> DISARMED: [Valid code entered] / cancelEntryCountdown()
+    ENTRY_DELAY --> ALARMING: [entryDelaySeconds timer expires]
 
-    ALARMING --> ARMED: Alarm cancelled (false alarm)
-    ALARMING --> DISARMED: System disarmed
+    ALARMING --> ARMED: [AlarmManager confirms false alarm]
+    ALARMING --> DISARMED: [User calls disarmAllZones()]
     
-    ARMED --> DISARMED: disarmZone() / disarmAllZones()
-
-    note right of DISARMED
-        Initial state
-        All zones disarmed
-        No protection active
-    end note
-
-    note right of ARMING
-        Exit delay period
-        User has time to leave
-        Sensors bypass active
-    end note
-
-    note right of ARMED
-        Full protection active
-        All zones armed
-        Monitoring sensors
-    end note
-
-    note right of ENTRY_DELAY
-        Grace period for user
-        Countdown before alarm
-        Warning notifications sent
-    end note
-
-    note right of ALARMING
-        Alarm triggered
-        Siren activated
-        Emergency notifications sent
-    end note
+    ARMED --> DISARMED: [User calls disarmZone() or disarmAllZones()]
 ```
 
 ### State Transition Details
@@ -150,92 +159,114 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING: triggerAlarm(event)
+    [*] --> PENDING
 
     state PENDING {
-        [*] --> UnverifiedPending: Initial state
-        UnverifiedPending --> AwaitingVerification: startVerificationTimer()
-        AwaitingVerification --> VerificationTimeout: Timer expires
+        [*] --> Verifying
+        Verifying: Set status = PENDING
+        Verifying: Set verificationStatus = PENDING
+        Verifying: Send push notification to user
+        Verifying: Send SMS/Email alerts
+        Verifying: Start verification timer
+        Verifying: Activate siren (policy-based)
+        Verifying: Log trigger event
     }
 
-    PENDING --> VERIFIED: verifyAlarm(confirmed=true)
-    PENDING --> CANCELLED: verifyAlarm(confirmed=false)
-    PENDING --> CANCELLED: cancelAlarm()
+    state VERIFIED {
+        [*] --> Confirmed
+        Confirmed: Set status = VERIFIED
+        Confirmed: Set verificationStatus = CONFIRMED
+        Confirmed: Update verifiedAt timestamp
+        Confirmed: Prepare emergency dispatch
+        Confirmed: Notify monitoring center
+        Confirmed: Log verification
+    }
 
-    VERIFIED --> ESCALATED: escalateAlarm()
-    VERIFIED --> RESOLVED: User resolves
+    state ESCALATED {
+        [*] --> Dispatching
+        Dispatching: Set status = ESCALATED
+        Dispatching: Call emergency services
+        Dispatching: Send critical notifications
+        Dispatching: Activate all alarms
+        Dispatching: Record dispatch details
+        Dispatching: Stream camera feeds
+    }
+
+    state CANCELLED {
+        [*] --> Dismissing
+        Dismissing: Set status = CANCELLED
+        Dismissing: Set verificationStatus = FALSE_ALARM
+        Dismissing: Stop siren
+        Dismissing: Cancel notifications
+        Dismissing: Log false alarm
+    }
+
+    state RESOLVED {
+        [*] --> Closing
+        Closing: Set status = RESOLVED
+        Closing: Update resolvedAt timestamp
+        Closing: Record resolution details
+        Closing: Archive alarm record
+        Closing: Generate incident report
+    }
+
+    PENDING --> VERIFIED: [User confirms] / verifyAlarm(id, confirmed=true)
+    PENDING --> CANCELLED: [User dismisses] / verifyAlarm(id, confirmed=false)
+    PENDING --> CANCELLED: [System cancels] / cancelAlarm(id)
+    PENDING --> ESCALATED: [Verification timeout] AND [No user response]
+
+    VERIFIED --> ESCALATED: [Critical alarm] / escalateAlarm(id)
+    VERIFIED --> RESOLVED: [Alarm handled locally] / resolve()
     
-    ESCALATED --> RESOLVED: Emergency services dispatched + resolved
+    ESCALATED --> RESOLVED: [Emergency services respond] / resolve()
     
-    CANCELLED --> [*]: Alarm dismissed
-    RESOLVED --> [*]: Alarm handled
-
-    note right of PENDING
-        Initial alarm state
-        Verification in progress
-        Notifications sent to user
-        Siren may be activated
-    end note
-
-    note right of VERIFIED
-        User confirmed alarm
-        Real incident
-        Emergency dispatch ready
-    end note
-
-    note right of ESCALATED
-        Emergency services called
-        Critical situation
-        Full response activated
-    end note
-
-    note right of CANCELLED
-        False alarm
-        User cancelled
-        System reset
-    end note
-
-    note right of RESOLVED
-        Final state
-        Incident handled
-        Logged in system
-    end note
+    CANCELLED --> [*]
+    RESOLVED --> [*]
 ```
 
 ### Verification Status Sub-State
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING: Alarm created
+    [*] --> PENDING
 
-    PENDING --> CONFIRMED: User confirms (true alarm)
-    PENDING --> FALSE_ALARM: User dismisses (false alarm)
-    PENDING --> TIMEOUT: No user response
+    state PENDING {
+        [*] --> WaitingInput
+        WaitingInput: Set verificationStatus = PENDING
+        WaitingInput: Display verification UI
+        WaitingInput: Start countdown timer
+        WaitingInput: Send notifications
+        WaitingInput: Wait for user action
+    }
 
-    CONFIRMED --> [*]: Move to VERIFIED
-    FALSE_ALARM --> [*]: Move to CANCELLED
-    TIMEOUT --> [*]: Auto-escalate
+    state CONFIRMED {
+        [*] --> Verified
+        Verified: Set verificationStatus = CONFIRMED
+        Verified: Update verification timestamp
+        Verified: Trigger VERIFIED state
+    }
 
-    note right of PENDING
-        Waiting for user input
-        Verification timer active
-        Notifications sent
-    end note
+    state FALSE_ALARM {
+        [*] --> Dismissed
+        Dismissed: Set verificationStatus = FALSE_ALARM
+        Dismissed: Stop all alerts
+        Dismissed: Trigger CANCELLED state
+    }
 
-    note right of CONFIRMED
-        User confirmed emergency
-        Proceed with escalation
-    end note
+    state TIMEOUT {
+        [*] --> AutoEscalate
+        AutoEscalate: Set verificationStatus = TIMEOUT
+        AutoEscalate: Assume real emergency
+        AutoEscalate: Trigger ESCALATED state
+    }
 
-    note right of FALSE_ALARM
-        User dismissed alarm
-        Cancel alarm process
-    end note
+    PENDING --> CONFIRMED: [User presses Confirm] / verify(true)
+    PENDING --> FALSE_ALARM: [User presses Dismiss] / verify(false)
+    PENDING --> TIMEOUT: [Timer expires] AND [No response]
 
-    note right of TIMEOUT
-        No user response
-        Auto-escalate for safety
-    end note
+    CONFIRMED --> [*]
+    FALSE_ALARM --> [*]
+    TIMEOUT --> [*]
 ```
 
 ### State Transition Details
@@ -262,56 +293,72 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*] --> OFFLINE: Device created
+    [*] --> OFFLINE
 
-    OFFLINE --> ONLINE: Device connects / sendHeartbeat()
-    ONLINE --> OFFLINE: Connection lost / heartbeat timeout
+    state OFFLINE {
+        [*] --> Disconnected
+        Disconnected: Set status = OFFLINE
+        Disconnected: Clear lastHeartbeat
+        Disconnected: Stop monitoring
+        Disconnected: Generate offline alert
+        Disconnected: Notify DeviceHealthMonitor
+    }
+
+    state ONLINE {
+        [*] --> Operating
+        Operating: Set status = ONLINE
+        Operating: Update lastHeartbeat
+        Operating: Monitor battery level
+        Operating: Check signal strength
+        Operating: Enable device functions
+        Operating: Report telemetry data
+    }
+
+    state LOW_BATTERY {
+        [*] --> Warning
+        Warning: Set status = LOW_BATTERY
+        Warning: Send battery warning notification
+        Warning: Continue normal operation
+        Warning: Increase heartbeat frequency
+        Warning: Log battery level
+    }
+
+    state FAULT {
+        [*] --> Malfunctioning
+        Malfunctioning: Set status = FAULT
+        Malfunctioning: Disable affected functions
+        Malfunctioning: Send fault notification
+        Malfunctioning: Log error details
+        Malfunctioning: Attempt self-diagnosis
+    }
+
+    state MAINTENANCE {
+        [*] --> Servicing
+        Servicing: Set status = MAINTENANCE
+        Servicing: Set isEnabled = false
+        Servicing: Pause monitoring
+        Servicing: Allow firmware update
+        Servicing: Suppress alerts
+    }
+
+    OFFLINE --> ONLINE: [Device connects] / sendHeartbeat()
+    ONLINE --> OFFLINE: [Heartbeat timeout] AND [Time > threshold]
     
-    ONLINE --> LOW_BATTERY: Battery level < threshold
-    ONLINE --> FAULT: Device malfunction detected
-    ONLINE --> MAINTENANCE: User sets maintenance mode
+    ONLINE --> LOW_BATTERY: [batteryLevel < threshold] / updateStatus(LOW_BATTERY)
+    ONLINE --> FAULT: [Malfunction detected] / updateStatus(FAULT)
+    ONLINE --> MAINTENANCE: [User initiates] / updateStatus(MAINTENANCE)
     
-    LOW_BATTERY --> ONLINE: Battery replaced / charged
-    LOW_BATTERY --> OFFLINE: Battery depleted
+    LOW_BATTERY --> ONLINE: [Battery restored] / updateStatus(ONLINE)
+    LOW_BATTERY --> OFFLINE: [Battery depleted] AND [Connection lost]
     
-    FAULT --> MAINTENANCE: User initiates repair
-    FAULT --> OFFLINE: Critical failure
-    FAULT --> ONLINE: Issue auto-resolved
+    FAULT --> MAINTENANCE: [User requests repair] / updateStatus(MAINTENANCE)
+    FAULT --> OFFLINE: [Critical failure] / Connection lost
+    FAULT --> ONLINE: [Issue resolved] / updateStatus(ONLINE)
     
-    MAINTENANCE --> ONLINE: Maintenance completed / activate()
-    MAINTENANCE --> OFFLINE: Device powered down
+    MAINTENANCE --> ONLINE: [Service complete] / activate()
+    MAINTENANCE --> OFFLINE: [Device powered down] / deactivate()
     
-    OFFLINE --> [*]: Device removed
-
-    note right of OFFLINE
-        Device not connected
-        No heartbeat received
-        Alerts generated
-    end note
-
-    note right of ONLINE
-        Normal operation
-        Heartbeat active
-        Fully functional
-    end note
-
-    note right of LOW_BATTERY
-        Battery warning
-        Notification sent
-        Still operational
-    end note
-
-    note right of FAULT
-        Malfunction detected
-        Reduced functionality
-        Requires attention
-    end note
-
-    note right of MAINTENANCE
-        User-initiated mode
-        Device updates/repairs
-        Temporarily offline
-    end note
+    OFFLINE --> [*]: [Device removed] / removeDevice()
 ```
 
 ### State Transition Details
@@ -343,40 +390,51 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*] --> CREATED: createSession(userId)
+    [*] --> CREATED
 
-    CREATED --> ACTIVE: Session validated
+    state CREATED {
+        [*] --> Initializing
+        Initializing: Generate sessionId (UUID)
+        Initializing: Set userId
+        Initializing: Record deviceInfo
+        Initializing: Set createdAt timestamp
+        Initializing: Calculate expiresAt
+        Initializing: Initialize lastActivityAt
+    }
+
+    state ACTIVE {
+        [*] --> Authenticated
+        Authenticated: Validate session token
+        Authenticated: Check expiresAt
+        Authenticated: Monitor user activity
+        Authenticated: Allow API access
+        Authenticated: Track lastActivityAt
+    }
+
+    state EXPIRED {
+        [*] --> TimedOut
+        TimedOut: Mark session invalid
+        TimedOut: Clear authentication
+        TimedOut: Log expiration event
+        TimedOut: Require re-authentication
+    }
+
+    state REVOKED {
+        [*] --> Terminated
+        Terminated: Invalidate session token
+        Terminated: Clear user session data
+        Terminated: Log logout event
+        Terminated: Remove from active sessions
+    }
+
+    CREATED --> ACTIVE: [Session validated] / validateSession()
     
-    ACTIVE --> ACTIVE: refresh() / User activity
-    ACTIVE --> EXPIRED: Timeout / expiresAt reached
-    ACTIVE --> REVOKED: logout() / revokeSession()
+    ACTIVE --> ACTIVE: [User activity detected] / refresh()
+    ACTIVE --> EXPIRED: [currentTime >= expiresAt] / System check
+    ACTIVE --> REVOKED: [User logs out] / logout()
     
-    EXPIRED --> [*]: Session cleanup
-    REVOKED --> [*]: Session cleanup
-
-    note right of CREATED
-        Session just created
-        Timestamps initialized
-        Not yet validated
-    end note
-
-    note right of ACTIVE
-        Valid session
-        User authenticated
-        Can be refreshed
-    end note
-
-    note right of EXPIRED
-        Timeout reached
-        No user activity
-        Re-login required
-    end note
-
-    note right of REVOKED
-        User logged out
-        Session terminated
-        Cannot be reused
-    end note
+    EXPIRED --> [*]
+    REVOKED --> [*]
 ```
 
 ### State Transition Details
@@ -401,25 +459,32 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*] --> DISARMED: Zone created
+    [*] --> DISARMED
 
-    DISARMED --> ARMED: arm()
-    ARMED --> DISARMED: disarm()
+    state DISARMED {
+        [*] --> Inactive
+        Inactive: Set armed = false
+        Inactive: Disable sensor monitoring
+        Inactive: Clear alarm triggers
+        Inactive: Allow sensor modifications
+        Inactive: Update modifiedAt timestamp
+    }
+
+    state ARMED {
+        [*] --> Active
+        Active: Set armed = true
+        Active: Enable sensor monitoring
+        Active: Validate all sensors online
+        Active: Apply entryExit delay settings
+        Active: Monitor for triggers
+        Active: Report to SecurityModeManager
+    }
+
+    DISARMED --> ARMED: [User arms zone] / arm()
+    ARMED --> DISARMED: [User disarms zone] / disarm()
     
-    DISARMED --> [*]: removeZone()
-    ARMED --> [*]: removeZone()
-
-    note right of DISARMED
-        Zone not protecting
-        Sensors inactive
-        No alarms triggered
-    end note
-
-    note right of ARMED
-        Zone protecting
-        Sensors monitoring
-        Alarms on trigger
-    end note
+    DISARMED --> [*]: [Zone deleted] / removeZone()
+    ARMED --> [*]: [Zone force deleted] / removeZone()
 ```
 
 ### State Transition Details
@@ -442,43 +507,57 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*] --> IDLE: Camera ready
+    [*] --> IDLE
 
-    IDLE --> RECORDING: startRecording(trigger)
+    state IDLE {
+        [*] --> Ready
+        Ready: Set activeRecordings[cameraId] = false
+        Ready: Camera streaming only
+        Ready: Monitor for recording triggers
+        Ready: Check storage availability
+        Ready: Wait for startRecording() call
+    }
+
+    state RECORDING {
+        [*] --> Capturing
+        Capturing: Set activeRecordings[cameraId] = true
+        Capturing: Generate recordingId (UUID)
+        Capturing: Set startTime timestamp
+        Capturing: Capture video stream
+        Capturing: Write to storage
+        Capturing: Monitor storage space
+        Capturing: Update recording metadata
+    }
+
+    state PAUSED {
+        [*] --> Suspended
+        Suspended: Pause video capture
+        Suspended: Keep session active
+        Suspended: Allow resume
+        Suspended: (Not in MVP scope)
+    }
+
+    state SAVED {
+        [*] --> Stored
+        Stored: Set endTime timestamp
+        Stored: Calculate duration
+        Stored: Generate thumbnail
+        Stored: Save metadata to database
+        Stored: Make available for playback
+        Stored: Generate fileUrl
+    }
+
+    IDLE --> RECORDING: [Trigger activated] / startRecording(cameraId, trigger)
     
-    RECORDING --> PAUSED: User pauses (not in MVP)
-    RECORDING --> SAVED: stopRecording()
-    RECORDING --> IDLE: Recording fails
+    RECORDING --> PAUSED: [User pauses] / pauseRecording() (Not in MVP)
+    RECORDING --> SAVED: [Recording stopped] / stopRecording(cameraId)
+    RECORDING --> IDLE: [Recording error] OR [Storage full]
     
-    PAUSED --> RECORDING: User resumes (not in MVP)
-    PAUSED --> SAVED: stopRecording()
+    PAUSED --> RECORDING: [User resumes] / resumeRecording() (Not in MVP)
+    PAUSED --> SAVED: [User stops] / stopRecording(cameraId)
     
-    SAVED --> IDLE: Recording stored
-    SAVED --> [*]: Recording deleted
-
-    note right of IDLE
-        No active recording
-        Camera streaming only
-        Ready to record
-    end note
-
-    note right of RECORDING
-        Active recording
-        Video being captured
-        Storage consuming
-    end note
-
-    note right of PAUSED
-        Recording paused
-        (Not in MVP scope)
-        Can resume
-    end note
-
-    note right of SAVED
-        Recording complete
-        File saved to storage
-        Available for playback
-    end note
+    SAVED --> IDLE: [Recording processed] / Cleanup
+    SAVED --> [*]: [Recording deleted] / deleteRecording(recordingId)
 ```
 
 ### State Transition Details
