@@ -70,17 +70,17 @@ graph TB
     SMM --> SZ
     SMM --> AM
     AM --> NM
-    
+
     SS --> RM
     PTZ --> SS
-    
+
     DR --> DHM
     DR --> DCS
-    
+
     LS --> SM
     SUS --> SM
     SM --> UPM
-    
+
     AM --> AL
     DR --> AL
     LS --> AL
@@ -102,7 +102,7 @@ graph TB
 ```mermaid
 classDiagram
     direction TB
-    
+
     class SecurityModeManager {
         -currentMode: SecurityMode
         -armingState: SecurityArmingState
@@ -183,7 +183,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class SafetyZone {
         -id: int
         -name: String
@@ -234,7 +234,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class AlarmManager {
         -activeAlarms: List~Alarm~
         -alarmConditions: Map~SecurityMode, AlarmPolicy~
@@ -318,7 +318,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class RecordingManager {
         -recordings: Repository~Recording~
         -recordingSettings: Map~String, RecordingSetting~
@@ -425,7 +425,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class StreamingService {
         -activeSessions: Map~String, StreamSession~
         -streamingProtocol: StreamingProtocol
@@ -500,7 +500,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class PTZControlService {
         -ptzLocks: Map~String, PTZLock~
         -lockDuration: int
@@ -565,7 +565,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class DeviceRegistry {
         -devices: Repository~Device~
         -discoveryService: DeviceDiscoveryService
@@ -635,7 +635,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class DeviceHealthMonitor {
         -healthReports: Map~UUID, DeviceHealthReport~
         -heartbeatInterval: int
@@ -704,7 +704,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class DeviceConfigService {
         -deviceSettings: Map~UUID, DeviceSettings~
         -configurationValidator: ConfigValidator
@@ -759,7 +759,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class NotificationManager {
         -notificationQueue: Queue~Notification~
         -notificationPolicies: Map~String, NotificationPolicy~
@@ -857,7 +857,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class SignUpService {
         -users: Repository~User~
         -emailService: EmailService
@@ -927,7 +927,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class LoginService {
         -users: Repository~User~
         -maxFailedAttempts: int
@@ -987,7 +987,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class SessionManager {
         -sessions: SessionStore
         -sessionTimeout: int
@@ -1046,7 +1046,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class UserPermissionManager {
         -permissions: Repository~UserPermission~
         -roleTemplates: Map~UserRole, Set~Permission~~
@@ -1134,7 +1134,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    
+
     class ActivityLogger {
         -eventStore: EventStore
         -auditLog: AuditLog
@@ -1249,21 +1249,21 @@ graph TB
 
     SMM -->|triggers| AM
     AM -->|sends| NM
-    
+
     DR -->|monitors| DHM
     DR -->|configures| DCS
-    
+
     SS -->|records| RM
     SS -->|controls| PTZ
-    
+
     SUS -->|creates| SM
     LS -->|validates| SM
     SM -->|checks| UPM
-    
+
     AM -->|logs| AL
     LS -->|logs| AL
     DR -->|logs| AL
-    
+
     style SMM fill:#667eea
     style AM fill:#F44336
     style NM fill:#FF9800
@@ -1369,13 +1369,13 @@ Services depend on abstractions (interfaces) not concretions
 
 ## Statistics
 
-| Category                     | Count |
-| ---------------------------- | ----- |
-| **Core Services**            | 15    |
-| **Supporting Classes**       | 40+   |
-| **Enumerations**             | 15+   |
-| **Interfaces**               | 6     |
-| **Total Classes**            | **60+** |
+| Category               | Count   |
+| ---------------------- | ------- |
+| **Core Services**      | 15      |
+| **Supporting Classes** | 40+     |
+| **Enumerations**       | 15+     |
+| **Interfaces**         | 6       |
+| **Total Classes**      | **60+** |
 
 ---
 
@@ -1417,4 +1417,3 @@ Services depend on abstractions (interfaces) not concretions
 **Last Updated:** 2025-11-11  
 **Author:** SafeHome Development Team  
 **Layer:** Business Logic Layer
-
