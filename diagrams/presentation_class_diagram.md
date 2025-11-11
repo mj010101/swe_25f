@@ -1,10 +1,10 @@
 # SafeHome Presentation Layer - Class Diagrams
 
-> Presentation Layer의 8개 핵심 ViewController 및 Component에 대한 상세 UML Class Diagram
+> Detailed UML Class Diagrams for 8 Core ViewControllers and Components in the Presentation Layer
 
-## 📑 목차
+## 📑 Table of Contents
 
-- [전체 Presentation Layer 통합 다이어그램](#전체-presentation-layer-통합-다이어그램)
+- [Complete Presentation Layer Integration Diagram](#complete-presentation-layer-integration-diagram)
 - [1. DashboardViewController](#1-dashboardviewcontroller)
 - [2. CameraViewController](#2-cameraviewcontroller)
 - [3. SecurityZoneViewController](#3-securityzoneviewcontroller)
@@ -13,11 +13,11 @@
 - [6. UserAccountViewController](#6-useraccountviewcontroller)
 - [7. RecordingViewController](#7-recordingviewcontroller)
 - [8. NotificationPanel](#8-notificationpanel)
-- [클래스 간 관계 및 상호작용](#클래스-간-관계-및-상호작용)
+- [Class Relationships and Interactions](#class-relationships-and-interactions)
 
 ---
 
-## 전체 Presentation Layer 통합 다이어그램
+## Complete Presentation Layer Integration Diagram
 
 ```mermaid
 classDiagram
@@ -142,16 +142,16 @@ classDiagram
 
     UserAccountViewController --> DashboardViewController : returns to
 
-    note for DashboardViewController "메인 대시보드 화면 제어\n시스템 상태 종합 표시"
-    note for CameraViewController "카메라 라이브뷰 및\nPTZ 제어 담당"
-    note for SecurityZoneViewController "Security Zone 설정 관리\n(HW2 신규 기능)"
+    note for DashboardViewController "Main dashboard screen controller\nComprehensive system status display"
+    note for CameraViewController "Camera live view and\nPTZ control handler"
+    note for SecurityZoneViewController "Security Zone configuration\n(HW2 New Feature)"
 ```
 
 ---
 
 ## 1. DashboardViewController
 
-**책임:** 메인 대시보드 화면 제어 및 상태 관리
+**Responsibility:** Main dashboard screen control and status management
 
 ```mermaid
 classDiagram
@@ -233,15 +233,15 @@ classDiagram
     DashboardViewController ..> SecurityMode : depends on
     EventsPanel --> Event : manages
 
-    note for DashboardViewController "메인 화면의 중앙 컨트롤러\n모든 위젯과 패널 관리"
-    note for SecurityModeDisplay "보안 모드 시각화\n아밍/디스아밍 상태 표시"
+    note for DashboardViewController "Central controller for main screen\nManages all widgets and panels"
+    note for SecurityModeDisplay "Security mode visualization\nArming/disarming status display"
 ```
 
 ---
 
 ## 2. CameraViewController
 
-**책임:** 카메라 라이브뷰, 녹화 재생, PTZ 제어 UI
+**Responsibility:** Camera live view, recording playback, PTZ control UI
 
 ```mermaid
 classDiagram
@@ -343,15 +343,15 @@ classDiagram
     VideoPlayer --> VideoStream : plays
     PTZControlPanel ..> PTZCommand : uses
 
-    note for CameraViewController "카메라 모든 기능의\n중앙 컨트롤러"
-    note for PTZControlPanel "Pan-Tilt-Zoom 제어\n프리셋 위치 관리"
+    note for CameraViewController "Central controller for\nall camera functions"
+    note for PTZControlPanel "Pan-Tilt-Zoom control\nPreset position management"
 ```
 
 ---
 
 ## 3. SecurityZoneViewController
 
-**책임:** Security Zone 설정 및 관리 UI (HW2 신규 기능)
+**Responsibility:** Security Zone configuration and management UI (HW2 New Feature)
 
 ```mermaid
 classDiagram
@@ -454,15 +454,15 @@ classDiagram
     DeviceSelectionPanel --> Device : manages
     SafetyZone --> Device : contains
 
-    note for SecurityZoneViewController "HW2 신규 기능\nZone 기반 보안 관리"
-    note for FloorPlanView "평면도에 Zone과\n장치 위치 시각화"
+    note for SecurityZoneViewController "HW2 New Feature\nZone-based security management"
+    note for FloorPlanView "Visualize zones and\ndevice locations on floor plan"
 ```
 
 ---
 
 ## 4. DeviceManagementViewController
 
-**책임:** 장치 추가, 설정, 상태 모니터링 UI
+**Responsibility:** Device addition, configuration, and status monitoring UI
 
 ```mermaid
 classDiagram
@@ -576,15 +576,15 @@ classDiagram
     DeviceManagementViewController ..> DeviceFilter : uses
     DeviceManagementViewController ..> SortCriteria : uses
 
-    note for DeviceManagementViewController "모든 장치의\n중앙 관리 컨트롤러"
-    note for AddDeviceWizard "단계별 장치 추가\n마법사 UI"
+    note for DeviceManagementViewController "Central management controller\nfor all devices"
+    note for AddDeviceWizard "Step-by-step device addition\nwizard UI"
 ```
 
 ---
 
 ## 5. EmergencyViewController
 
-**책임:** 비상 상황 대응 UI (Panic Button, Alarm Verification)
+**Responsibility:** Emergency response UI (Panic Button, Alarm Verification)
 
 ```mermaid
 classDiagram
@@ -699,15 +699,15 @@ classDiagram
     Alarm ..> Severity : uses
     EmergencyViewController ..> EmergencyServiceType : uses
 
-    note for EmergencyViewController "비상 상황 전담\n신속한 대응 지원"
-    note for PanicButton "긴급 호출 버튼\n(3초 길게 누르기)"
+    note for EmergencyViewController "Dedicated emergency response\nRapid response support"
+    note for PanicButton "Emergency call button\n(Hold for 3 seconds)"
 ```
 
 ---
 
 ## 6. UserAccountViewController
 
-**책임:** 사용자 계정 관리 및 설정 UI
+**Responsibility:** User account management and settings UI
 
 ```mermaid
 classDiagram
@@ -828,15 +828,15 @@ classDiagram
     User ..> UserRole : has
     Role --> Permission : contains
 
-    note for UserAccountViewController "사용자 계정의\n모든 설정 관리"
-    note for SecuritySettingsView "2FA, 생체인증 등\n보안 설정 관리"
+    note for UserAccountViewController "Manages all user account\nsettings and preferences"
+    note for SecuritySettingsView "Manages 2FA, biometric\nauthentication settings"
 ```
 
 ---
 
 ## 7. RecordingViewController
 
-**책임:** 녹화 검색, 재생, 내보내기 UI
+**Responsibility:** Recording search, playback, and export UI
 
 ```mermaid
 classDiagram
@@ -978,15 +978,15 @@ classDiagram
     ExportPanel ..> ExportQuality : uses
     RecordingViewController ..> SecureLink : generates
 
-    note for RecordingViewController "녹화 영상 관리\n검색/재생/공유"
-    note for ExportPanel "다양한 형식으로\n영상 내보내기"
+    note for RecordingViewController "Recording video management\nSearch/playback/share"
+    note for ExportPanel "Export video in\nvarious formats"
 ```
 
 ---
 
 ## 8. NotificationPanel
 
-**책임:** 실시간 알림 표시 및 관리
+**Responsibility:** Real-time notification display and management
 
 ```mermaid
 classDiagram
@@ -1070,31 +1070,31 @@ classDiagram
     NotificationFilter ..> NotificationType : filters by
     NotificationFilter ..> Priority : filters by
 
-    note for NotificationPanel "실시간 알림 센터\n모든 알림 통합 관리"
-    note for NotificationSettings "알림 동작 설정\n조용한 시간 관리"
+    note for NotificationPanel "Real-time notification center\nIntegrated notification management"
+    note for NotificationSettings "Notification behavior settings\nQuiet hours management"
 ```
 
 ---
 
-## 클래스 간 관계 및 상호작용
+## Class Relationships and Interactions
 
-### 주요 네비게이션 흐름
+### Main Navigation Flow
 
 ```mermaid
 graph LR
-    A[DashboardViewController] -->|카메라 선택| B[CameraViewController]
-    A -->|Zone 관리| C[SecurityZoneViewController]
-    A -->|장치 관리| D[DeviceManagementViewController]
-    A -->|비상| E[EmergencyViewController]
-    A -->|설정| F[UserAccountViewController]
-    B -->|녹화 보기| G[RecordingViewController]
-    C -->|장치 추가| D
+    A[DashboardViewController] -->|Select Camera| B[CameraViewController]
+    A -->|Zone Management| C[SecurityZoneViewController]
+    A -->|Device Management| D[DeviceManagementViewController]
+    A -->|Emergency| E[EmergencyViewController]
+    A -->|Settings| F[UserAccountViewController]
+    B -->|View Recordings| G[RecordingViewController]
+    C -->|Add Device| D
 
     style A fill:#667eea
     style E fill:#F44336
 ```
 
-### 데이터 흐름
+### Data Flow
 
 ```mermaid
 graph TB
@@ -1126,13 +1126,13 @@ graph TB
     RVC --> AS
 
     AS --> DM
-    AS -.알림.-> NP
+    AS -.Notifications.-> NP
 
     style AS fill:#4CAF50
     style DM fill:#FF9800
 ```
 
-### 컴포넌트 의존성
+### Component Dependencies
 
 ```mermaid
 graph TD
@@ -1151,74 +1151,74 @@ graph TD
 
 ---
 
-## 설계 패턴 및 원칙
+## Design Patterns and Principles
 
-### 1. MVC (Model-View-Controller) 패턴
+### 1. MVC (Model-View-Controller) Pattern
 
-- **ViewController**: 사용자 입력 처리 및 View 업데이트 조정
-- **View Components**: UI 렌더링 (Panel, Grid, Player 등)
-- **Model**: Domain 객체 (User, Device, Recording 등)
+- **ViewController**: Handles user input and coordinates view updates
+- **View Components**: UI rendering (Panel, Grid, Player, etc.)
+- **Model**: Domain objects (User, Device, Recording, etc.)
 
 ### 2. Composite Pattern
 
-- 각 ViewController는 여러 하위 View 컴포넌트를 포함
-- 계층적 UI 구조 형성
+- Each ViewController contains multiple child View components
+- Forms hierarchical UI structure
 
 ### 3. Observer Pattern
 
-- NotificationPanel이 시스템 이벤트를 관찰
-- 실시간 알림 표시
+- NotificationPanel observes system events
+- Real-time notification display
 
 ### 4. Strategy Pattern
 
-- SearchFilter, DeviceFilter 등 다양한 필터링 전략
-- ExportFormat, ExportQuality 선택 가능
+- Various filtering strategies (SearchFilter, DeviceFilter, etc.)
+- Selectable ExportFormat and ExportQuality
 
 ### 5. Command Pattern
 
-- QuickActionsPanel의 Action 실행
-- PTZCommand 처리
+- Action execution in QuickActionsPanel
+- PTZCommand processing
 
 ---
 
-## 주요 특징
+## Key Features
 
-### ✅ 역할 분리
+### ✅ Separation of Concerns
 
-- 각 ViewController는 단일 책임 원칙(SRP) 준수
-- View와 비즈니스 로직 분리
+- Each ViewController follows Single Responsibility Principle (SRP)
+- Separation of View and business logic
 
-### ✅ 재사용성
+### ✅ Reusability
 
-- Panel, View 컴포넌트는 여러 Controller에서 재사용
-- VideoPlayer는 CameraViewController와 RecordingViewController에서 공유
+- Panel and View components are reused across multiple Controllers
+- VideoPlayer is shared between CameraViewController and RecordingViewController
 
-### ✅ 확장성
+### ✅ Extensibility
 
-- 새로운 ViewController 추가 용이
-- 기존 컴포넌트 수정 없이 확장 가능
+- Easy to add new ViewControllers
+- Extensible without modifying existing components
 
-### ✅ 유지보수성
+### ✅ Maintainability
 
-- 명확한 인터페이스와 책임 정의
-- 낮은 결합도, 높은 응집도
-
----
-
-## 통계
-
-| 항목                | 개수                    |
-| ------------------- | ----------------------- |
-| **ViewController**  | 7개                     |
-| **Component**       | 1개 (NotificationPanel) |
-| **View Components** | 20+ 개                  |
-| **Domain Objects**  | 15+ 개                  |
-| **Enumerations**    | 10+ 개                  |
-| **총 클래스**       | **50+ 개**              |
+- Clear interface and responsibility definitions
+- Low coupling, high cohesion
 
 ---
 
-**문서 버전:** 1.0.0  
-**최종 업데이트:** 2025-11-11  
-**작성자:** SafeHome Development Team  
-**레이어:** Presentation Layer
+## Statistics
+
+| Item                | Count                 |
+| ------------------- | --------------------- |
+| **ViewController**  | 7                     |
+| **Component**       | 1 (NotificationPanel) |
+| **View Components** | 20+                   |
+| **Domain Objects**  | 15+                   |
+| **Enumerations**    | 10+                   |
+| **Total Classes**   | **50+**               |
+
+---
+
+**Document Version:** 1.0.0  
+**Last Updated:** 2025-11-11  
+**Author:** SafeHome Development Team  
+**Layer:** Presentation Layer
