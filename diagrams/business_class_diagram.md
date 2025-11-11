@@ -624,33 +624,38 @@ graph TB
 ### SOLID Principles
 
 **Single Responsibility Principle (SRP)**
+
 - Each service class has a single, well-defined responsibility
 
 **Open/Closed Principle (OCP)**
+
 - Services are open for extension through interfaces and inheritance
 
 **Liskov Substitution Principle (LSP)**
+
 - Interfaces can be substituted with implementations
 
 **Interface Segregation Principle (ISP)**
+
 - Focused interfaces (StorageProvider, EventStore, etc.)
 
 **Dependency Inversion Principle (DIP)**
+
 - Services depend on abstractions (interfaces) not concretions
 
 ---
 
 ## Statistics
 
-| Category                 | Count   |
-| ------------------------ | ------- |
-| **Core Services**        | 15      |
-| **Security Management**  | 3       |
-| **Recording/Streaming**  | 3       |
-| **Device Management**    | 3       |
-| **User/Auth**            | 4       |
-| **Notification**         | 1       |
-| **Logging**              | 1       |
+| Category                | Count |
+| ----------------------- | ----- |
+| **Core Services**       | 15    |
+| **Security Management** | 3     |
+| **Recording/Streaming** | 3     |
+| **Device Management**   | 3     |
+| **User/Auth**           | 4     |
+| **Notification**        | 1     |
+| **Logging**             | 1     |
 
 ---
 
