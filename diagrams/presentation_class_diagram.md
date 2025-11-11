@@ -1,6 +1,6 @@
 # SafeHome Presentation Layer - Class Diagrams
 
-> Detailed UML Class Diagrams for 8 Core ViewControllers and Components in the Presentation Layer
+> Detailed UML Class Diagrams for 8 ViewControllers and Components in the Presentation Layer
 
 ## 📑 Table of Contents
 
@@ -31,13 +31,12 @@ graph TB
         NP[NotificationPanel]
     end
 
-    DVC --> SZVC
-    DVC --> CVC
-    DVC --> DMVC
-    DVC --> EVC
-    DVC --> UAVC
-    CVC --> RVC
-    SZVC --> DMVC
+    DVC -->|navigates| CVC
+    DVC -->|navigates| SZVC
+    DVC -->|navigates| DMVC
+    DVC -->|navigates| EVC
+    DVC -->|navigates| UAVC
+    CVC -->|navigates| RVC
 
     style DVC fill:#667eea
     style EVC fill:#F44336
@@ -48,45 +47,42 @@ graph TB
 
 ## 1. DashboardViewController
 
-**Responsibility:** Main dashboard screen control and status management
+**Purpose:** Main dashboard screen controller and state management
 
 ```mermaid
 classDiagram
     direction TB
 
     class DashboardViewController {
-        -securityModeDisplay: SecurityModeDisplay
-        -recentEventsPanel: EventsPanel
-        -deviceStatusWidget: DeviceStatusWidget
-        -quickActionsPanel: QuickActionsPanel
         -currentUser: User
+        -securityMode: SecurityMode
+        -recentEvents: List~SensorEvent~
+        -deviceStatuses: Map~UUID, DeviceStatus~
         +initialize() void
         +refreshDashboard() void
         +handleModeChange(mode: SecurityMode) void
-        +displayRecentEvents(events: List~Event~) void
+        +displayRecentEvents(events: List~SensorEvent~) void
         +updateDeviceStatus(devices: List~Device~) void
         +showNotification(notification: Notification) void
     }
 
-    note for DashboardViewController "Main dashboard screen controller\nManages system status display\nCoordinates all dashboard widgets"
+    note for DashboardViewController "Main dashboard screen controller\nManages system status display\nCoordinates dashboard view"
 ```
 
 ---
 
 ## 2. CameraViewController
 
-**Responsibility:** Camera live view, recording playback, PTZ control UI
+**Purpose:** Camera live view, recording playback, PTZ control UI
 
 ```mermaid
 classDiagram
     direction TB
 
     class CameraViewController {
-        -videoPlayer: VideoPlayer
-        -ptzControlPanel: PTZControlPanel
-        -audioControl: AudioControl
         -selectedCamera: Camera
-        -streamSession: StreamSession
+        -isLiveViewing: bool
+        -isAudioEnabled: bool
         +loadCamera(cameraId: UUID) void
         +startLiveView() void
         +stopLiveView() void
@@ -103,17 +99,15 @@ classDiagram
 
 ## 3. SecurityZoneViewController
 
-**Responsibility:** Security Zone configuration and management UI (HW2 New Feature)
+**Purpose:** Security Zone configuration and management UI
 
 ```mermaid
 classDiagram
     direction TB
 
     class SecurityZoneViewController {
-        -floorPlanView: FloorPlanView
-        -zoneListPanel: ZoneListPanel
-        -deviceSelectionPanel: DeviceSelectionPanel
         -selectedZone: SafetyZone
+        -availableDevices: List~Device~
         +loadZones() void
         +createZone(zoneName: String) void
         +editZone(zoneId: int) void
@@ -131,24 +125,22 @@ classDiagram
 
 ## 4. DeviceManagementViewController
 
-**Responsibility:** Device addition, configuration, and status monitoring UI
+**Purpose:** Device registration, configuration, status monitoring UI
 
 ```mermaid
 classDiagram
     direction TB
 
     class DeviceManagementViewController {
-        -deviceListView: DeviceListView
-        -deviceDetailView: DeviceDetailView
-        -addDeviceWizard: AddDeviceWizard
         -devices: List~Device~
+        -selectedDevice: Device
         +displayDevices(devices: List~Device~) void
         +showDeviceDetail(deviceId: UUID) void
         +startAddDeviceFlow() void
-        +updateDeviceSettings(deviceId: UUID, settings: DeviceSettings) void
+        +updateDeviceSettings(deviceId: UUID, settings: Map~String, Any~) void
         +removeDevice(deviceId: UUID) void
-        +filterDevices(filter: DeviceFilter) void
-        +sortDevices(sortBy: SortCriteria) void
+        +filterDevices(category: DeviceCategory) void
+        +sortDevices(sortBy: String) void
     }
 
     note for DeviceManagementViewController "Device management controller\nAdd, configure, and monitor devices\nFilter and sort functionality"
@@ -158,17 +150,15 @@ classDiagram
 
 ## 5. EmergencyViewController
 
-**Responsibility:** Emergency response UI (Panic Button, Alarm Verification)
+**Purpose:** Emergency response UI (Panic Button, Alarm Verification)
 
 ```mermaid
 classDiagram
     direction TB
 
     class EmergencyViewController {
-        -panicButton: PanicButton
-        -alarmVerificationPanel: AlarmVerificationPanel
-        -emergencyContactsPanel: EmergencyContactsPanel
         -activeAlarms: List~Alarm~
+        -panicButtonPressed: bool
         +displayPanicButton() void
         +handlePanicPress(duration: int) void
         +showAlarmVerification(alarm: Alarm) void
@@ -185,19 +175,16 @@ classDiagram
 
 ## 6. UserAccountViewController
 
-**Responsibility:** User account management and settings UI
+**Purpose:** User account management and settings UI
 
 ```mermaid
 classDiagram
     direction TB
 
     class UserAccountViewController {
-        -profileView: ProfileView
-        -securitySettingsView: SecuritySettingsView
-        -userPermissionsView: UserPermissionsView
         -currentUser: User
         +loadUserProfile() void
-        +updateProfile(profile: UserProfile) void
+        +updateProfile(name: String, email: String, phone: String) void
         +changePassword(oldPw: String, newPw: String) void
         +manageUserPermissions(userId: UUID) void
         +logout() void
@@ -210,22 +197,20 @@ classDiagram
 
 ## 7. RecordingViewController
 
-**Responsibility:** Recording search, playback, and export UI
+**Purpose:** Recording search, playback, and export UI
 
 ```mermaid
 classDiagram
     direction TB
 
     class RecordingViewController {
-        -recordingGrid: RecordingGrid
-        -searchFilters: SearchFilterPanel
-        -videoPlayer: VideoPlayer
-        -exportPanel: ExportPanel
-        +searchRecordings(filter: SearchFilter) void
+        -recordings: List~Recording~
+        -searchFilter: Map~String, Any~
+        +searchRecordings(startDate: Date, endDate: Date, cameraId: String) void
         +displayRecordings(recordings: List~Recording~) void
         +playRecording(recordingId: UUID) void
         +exportRecording(recordingId: UUID, format: ExportFormat) void
-        +shareRecording(recordingId: UUID) SecureLink
+        +shareRecording(recordingId: UUID) String
         +deleteRecording(recordingId: UUID) void
     }
 
@@ -236,21 +221,20 @@ classDiagram
 
 ## 8. NotificationPanel
 
-**Responsibility:** Real-time notification display and management
+**Purpose:** Real-time notification display and management
 
 ```mermaid
 classDiagram
     direction TB
 
     class NotificationPanel {
-        -notifications: Queue~Notification~
+        -notifications: List~Notification~
         -unreadCount: int
-        -notificationSettings: NotificationSettings
         +displayNotification(notification: Notification) void
         +markAsRead(notificationId: UUID) void
         +clearAll() void
-        +updateNotificationSettings(settings: NotificationSettings) void
-        +filterNotifications(filter: NotificationFilter) void
+        +updateSettings(pushEnabled: bool, emailEnabled: bool) void
+        +filterNotifications(type: NotificationType) void
     }
 
     note for NotificationPanel "Real-time notification center\nNotification management\nSettings and filtering"
@@ -258,38 +242,7 @@ classDiagram
 
 ---
 
-## Component Relationships
-
-### Navigation Flow
-
-```mermaid
-graph TB
-    subgraph "Main Controllers"
-        Dashboard[DashboardViewController]
-        Camera[CameraViewController]
-        Zone[SecurityZoneViewController]
-        Device[DeviceManagementViewController]
-        Emergency[EmergencyViewController]
-        Account[UserAccountViewController]
-        Recording[RecordingViewController]
-        Notification[NotificationPanel]
-    end
-
-    Dashboard -->|Navigate| Camera
-    Dashboard -->|Navigate| Zone
-    Dashboard -->|Navigate| Device
-    Dashboard -->|Navigate| Emergency
-    Dashboard -->|Navigate| Account
-    Camera -->|Navigate| Recording
-    Zone -->|Uses| Device
-    Emergency -->|Triggers| Notification
-
-    style Dashboard fill:#667eea
-    style Emergency fill:#F44336
-    style Zone fill:#4CAF50
-```
-
-### Layer Architecture
+## Layer Architecture
 
 ```mermaid
 graph TB
@@ -318,26 +271,16 @@ graph TB
 
 ## Design Patterns
 
-### 1. MVC (Model-View-Controller) Pattern
+### MVC (Model-View-Controller) Pattern
 
 - **ViewController**: Handles user input and coordinates view updates
-- **View Components**: UI rendering (Panel, Grid, Player, etc.)
+- **Business Logic**: Service layer processing
 - **Model**: Domain objects from Data Layer
 
-### 2. Composite Pattern
-
-- Each ViewController contains multiple child View components
-- Hierarchical UI structure
-
-### 3. Observer Pattern
-
-- NotificationPanel observes system events
-- Real-time updates across controllers
-
-### 4. Command Pattern
+### Command Pattern
 
 - User actions encapsulated as commands
-- Undo/redo functionality support
+- Separation of UI and business logic
 
 ---
 
@@ -348,20 +291,15 @@ graph TB
 - Each ViewController has single responsibility
 - Clear separation between UI and business logic
 
-### ✅ Reusability
+### ✅ Low Coupling
 
-- View components are reused across controllers
-- Common patterns shared between similar UIs
+- ViewControllers depend on service interfaces
+- Minimal direct dependencies
 
-### ✅ Extensibility
+### ✅ High Cohesion
 
-- Easy to add new ViewControllers
-- Plugin-based architecture for new features
-
-### ✅ Maintainability
-
-- Clear interfaces and responsibilities
-- Low coupling, high cohesion
+- Related functionality grouped together
+- Clear boundaries between controllers
 
 ---
 

@@ -1,31 +1,26 @@
 # SafeHome Business Logic Layer - Class Diagrams
 
-> Detailed UML Class Diagrams for 15 Core Business Logic Components in the Backend Layer
+> Detailed UML Class Diagrams for 11 Core Business Logic Components in the Backend Layer
 
 ## 📑 Table of Contents
 
 - [Complete Business Logic Layer Integration Diagram](#complete-business-logic-layer-integration-diagram)
-- [Security & Zone Management](#security--zone-management)
+- [Security Management](#security-management)
   - [1. SecurityModeManager](#1-securitymodemanager)
-  - [2. SafetyZone](#2-safetyzone)
-  - [3. AlarmManager](#3-alarmmanager)
+  - [2. AlarmManager](#2-alarmmanager)
 - [Recording & Streaming Management](#recording--streaming-management)
-  - [4. RecordingManager](#4-recordingmanager)
-  - [5. StreamingService](#5-streamingservice)
-  - [6. PTZControlService](#6-ptzcontrolservice)
+  - [3. RecordingManager](#3-recordingmanager)
+  - [4. StreamingService](#4-streamingservice)
+  - [5. PTZControlService](#5-ptzcontrolservice)
+- [Notification Management](#notification-management)
+  - [6. NotificationManager](#6-notificationmanager)
 - [Device Management](#device-management)
   - [7. DeviceRegistry](#7-deviceregistry)
   - [8. DeviceHealthMonitor](#8-devicehealthmonitor)
   - [9. DeviceConfigService](#9-deviceconfigservice)
-- [Notification Management](#notification-management)
-  - [10. NotificationManager](#10-notificationmanager)
 - [User & Authentication Management](#user--authentication-management)
-  - [11. SignUpService](#11-signupservice)
-  - [12. LoginService](#12-loginservice)
-  - [13. SessionManager](#13-sessionmanager)
-  - [14. UserPermissionManager](#14-userpermissionmanager)
-- [Logging & Monitoring](#logging--monitoring)
-  - [15. ActivityLogger](#15-activitylogger)
+  - [10. LoginManager](#10-loginmanager)
+  - [11. UserPermissionManager](#11-userpermissionmanager)
 
 ---
 
@@ -35,7 +30,6 @@
 graph TB
     subgraph "Security Management"
         SMM[SecurityModeManager]
-        SZ[SafetyZone]
         AM[AlarmManager]
     end
 
@@ -56,17 +50,10 @@ graph TB
     end
 
     subgraph "User & Auth"
-        SUS[SignUpService]
-        LS[LoginService]
-        SM[SessionManager]
+        LM[LoginManager]
         UPM[UserPermissionManager]
     end
 
-    subgraph "Logging"
-        AL[ActivityLogger]
-    end
-
-    SMM --> SZ
     SMM --> AM
     AM --> NM
 
@@ -76,13 +63,7 @@ graph TB
     DR --> DHM
     DR --> DCS
 
-    LS --> SM
-    SUS --> SM
-    SM --> UPM
-
-    AM --> AL
-    DR --> AL
-    LS --> AL
+    LM --> UPM
 
     style SMM fill:#667eea
     style AM fill:#F44336
@@ -92,7 +73,7 @@ graph TB
 
 ---
 
-## Security & Zone Management
+## Security Management
 
 ### 1. SecurityModeManager
 
@@ -108,7 +89,6 @@ classDiagram
         -zones: Map~int, SafetyZone~
         -entryDelaySeconds: int
         -exitDelaySeconds: int
-        -delayTimer: Timer
         -bypassedSensors: Set~String~
         +setMode(mode: SecurityMode) void
         +getMode() SecurityMode
@@ -122,7 +102,6 @@ classDiagram
         +cancelEntryCountdown() void
         +bypassSensor(sensorId: String, duration: int) void
         +clearBypass(sensorId: String) void
-        -triggerAlarm(e: SensorEvent) void
         +getZones() Collection~SafetyZone~
         +addZone(zone: SafetyZone) void
         +removeZone(zoneId: int) void
@@ -134,39 +113,7 @@ classDiagram
 
 ---
 
-### 2. SafetyZone
-
-**Responsibility:** Security zone definition and sensor membership management
-
-```mermaid
-classDiagram
-    direction TB
-
-    class SafetyZone {
-        -id: int
-        -name: String
-        -sensorIds: Set~String~
-        -armed: bool
-        -entryExit: bool
-        -createdAt: Timestamp
-        -modifiedAt: Timestamp
-        +arm() void
-        +disarm() void
-        +isArmed() bool
-        +getSensorIds() Set~String~
-        +addSensor(sensorId: String) void
-        +removeSensor(sensorId: String) void
-        +containsSensor(sensorId: String) bool
-        +shouldTriggerDelay() bool
-        +validateSensor(sensor: Sensor) bool
-    }
-
-    note for SafetyZone "Represents a security zone\nGroups sensors logically\nManages arming state"
-```
-
----
-
-### 3. AlarmManager
+### 2. AlarmManager
 
 **Responsibility:** Alarm triggering, verification, and escalation logic
 
@@ -176,16 +123,14 @@ classDiagram
 
     class AlarmManager {
         -activeAlarms: List~Alarm~
-        -alarmConditions: Map~SecurityMode, AlarmPolicy~
-        -verificationQueue: Queue~AlarmVerification~
-        -emergencyDispatcher: EmergencyDispatcher
+        -alarmPolicies: Map~SecurityMode, Map~String, Any~~
         +triggerAlarm(event: SensorEvent) Alarm
         +verifyAlarm(alarmId: UUID, confirmed: bool) void
         +cancelAlarm(alarmId: UUID) void
         +escalateAlarm(alarmId: UUID) void
         +getActiveAlarms() List~Alarm~
-        +configureAlarmPolicy(mode: SecurityMode, policy: AlarmPolicy) void
-        +getAlarmPolicy(mode: SecurityMode) AlarmPolicy
+        +configureAlarmPolicy(mode: SecurityMode, policy: Map) void
+        +getAlarmPolicy(mode: SecurityMode) Map
         +dispatchEmergency(alarm: Alarm) void
         +startVerificationTimer(alarmId: UUID, timeout: int) void
         +activateSiren(alarmType: AlarmType) void
@@ -198,7 +143,7 @@ classDiagram
 
 ## Recording & Streaming Management
 
-### 4. RecordingManager
+### 3. RecordingManager
 
 **Responsibility:** Recording management, storage, search, and export
 
@@ -207,20 +152,19 @@ classDiagram
     direction TB
 
     class RecordingManager {
-        -recordings: Repository~Recording~
-        -recordingSettings: Map~String, RecordingSetting~
-        -storageProvider: StorageProvider
-        -activeRecordings: Map~String, RecordingSession~
-        +startRecording(cameraId: String, trigger: RecordingTrigger) RecordingSession
+        -recordings: List~Recording~
+        -recordingSettings: Map~String, Map~String, Any~~
+        -activeRecordings: Map~String, bool~
+        +startRecording(cameraId: String, trigger: RecordingTrigger) void
         +stopRecording(cameraId: String) void
-        +searchRecordings(filter: SearchFilter) List~Recording~
+        +searchRecordings(startDate: Date, endDate: Date, cameraId: String) List~Recording~
         +getRecording(recordingId: UUID) Recording
         +exportRecording(recordingId: UUID, format: ExportFormat) File
-        +shareRecording(recordingId: UUID, expirationHours: int) SecureLink
+        +shareRecording(recordingId: UUID, expirationHours: int) String
         +deleteRecording(recordingId: UUID) void
-        +configureRecording(cameraId: String, setting: RecordingSetting) void
-        +getRecordingSetting(cameraId: String) RecordingSetting
-        +getStorageUsage() StorageStats
+        +configureRecording(cameraId: String, settings: Map) void
+        +getRecordingSetting(cameraId: String) Map
+        +getStorageUsage() Map~String, float~
     }
 
     note for RecordingManager "Central recording management\nHandles all recording operations\nManages storage and search"
@@ -228,7 +172,7 @@ classDiagram
 
 ---
 
-### 5. StreamingService
+### 4. StreamingService
 
 **Responsibility:** Camera streaming and session management (excluding PTZ)
 
@@ -237,17 +181,16 @@ classDiagram
     direction TB
 
     class StreamingService {
-        -activeSessions: Map~String, StreamSession~
-        -streamingProtocol: StreamingProtocol
+        -activeSessions: Map~String, Map~String, Any~~
         -maxConcurrentStreams: int
-        +startLiveStream(cameraId: String, userId: UUID) StreamSession
+        +startLiveStream(cameraId: String, userId: UUID) Map
         +stopLiveStream(sessionId: UUID) void
-        +getActiveStreams(cameraId: String) List~StreamSession~
+        +getActiveStreams(cameraId: String) List~Map~
         +getStreamUrl(sessionId: UUID) String
-        +enableTwoWayAudio(sessionId: UUID) AudioSession
+        +enableTwoWayAudio(sessionId: UUID) void
         +disableTwoWayAudio(sessionId: UUID) void
-        +getStreamQuality(sessionId: UUID) StreamQuality
-        +adjustStreamQuality(sessionId: UUID, quality: StreamQuality) void
+        +getStreamQuality(sessionId: UUID) String
+        +adjustStreamQuality(sessionId: UUID, quality: String) void
     }
 
     note for StreamingService "Manages video streaming\nHandles concurrent sessions\nTwo-way audio support"
@@ -255,7 +198,7 @@ classDiagram
 
 ---
 
-### 6. PTZControlService
+### 5. PTZControlService
 
 **Responsibility:** PTZ control and lock management
 
@@ -264,7 +207,7 @@ classDiagram
     direction TB
 
     class PTZControlService {
-        -ptzLocks: Map~String, PTZLock~
+        -ptzLocks: Map~String, Map~String, Any~~
         -lockDuration: int
         -defaultTimeout: int
         +controlPTZ(cameraId: String, command: PTZCommand, userId: UUID) void
@@ -282,6 +225,36 @@ classDiagram
 
 ---
 
+## Notification Management
+
+### 6. NotificationManager
+
+**Responsibility:** Notification sending, cooldown management, policy application
+
+```mermaid
+classDiagram
+    direction TB
+
+    class NotificationManager {
+        -notificationQueue: List~Notification~
+        -notificationPolicies: Map~String, Map~String, Any~~
+        -cooldowns: Map~String, Date~
+        +sendNotification(recipient: User, notification: Notification) void
+        +sendPushNotification(userId: UUID, message: String, data: Map) void
+        +sendSMS(phoneNumber: String, message: String) void
+        +sendEmail(email: String, subject: String, body: String) void
+        +checkCooldown(deviceId: String, eventType: EventType) bool
+        +updateCooldown(deviceId: String, eventType: EventType) void
+        +configureCooldown(deviceId: String, duration: int) void
+        +getNotificationPolicy(userId: UUID) Map
+        +updateNotificationPolicy(userId: UUID, policy: Map) void
+    }
+
+    note for NotificationManager "Central notification hub\nManages all notification delivery\nPrevents notification spam"
+```
+
+---
+
 ## Device Management
 
 ### 7. DeviceRegistry
@@ -293,9 +266,7 @@ classDiagram
     direction TB
 
     class DeviceRegistry {
-        -devices: Repository~Device~
-        -discoveryService: DeviceDiscoveryService
-        -registrationQueue: Queue~Device~
+        -devices: List~Device~
         +discoverDevices() List~Device~
         +registerDevice(device: Device) void
         +removeDevice(deviceId: UUID) void
@@ -319,15 +290,14 @@ classDiagram
     direction TB
 
     class DeviceHealthMonitor {
-        -healthReports: Map~UUID, DeviceHealthReport~
         -heartbeatInterval: int
         -offlineThreshold: int
-        +checkDeviceHealth() List~DeviceHealthReport~
+        +checkDeviceHealth() Map~UUID, Map~String, Any~~
         +getDeviceStatus(deviceId: UUID) DeviceStatus
         +isDeviceOnline(deviceId: UUID) bool
         +recordHeartbeat(deviceId: UUID) void
         +detectOfflineDevices() List~Device~
-        +sendHealthAlert(deviceId: UUID, issue: HealthIssue) void
+        +sendHealthAlert(deviceId: UUID, issue: String) void
     }
 
     note for DeviceHealthMonitor "Monitors device health\nProactive issue detection\nHeartbeat management"
@@ -344,15 +314,14 @@ classDiagram
     direction TB
 
     class DeviceConfigService {
-        -deviceSettings: Map~UUID, DeviceSettings~
-        -configurationValidator: ConfigValidator
-        +updateDeviceSettings(deviceId: UUID, settings: DeviceSettings) void
-        +getDeviceSettings(deviceId: UUID) DeviceSettings
+        -deviceSettings: Map~UUID, Map~String, Any~~
+        +updateDeviceSettings(deviceId: UUID, settings: Map) void
+        +getDeviceSettings(deviceId: UUID) Map
         +activateDevice(deviceId: UUID) void
         +deactivateDevice(deviceId: UUID) void
         +resetDeviceToDefault(deviceId: UUID) void
-        +validateSettings(settings: DeviceSettings) bool
-        +applyBulkSettings(deviceIds: List~UUID~, settings: DeviceSettings) void
+        +validateSettings(settings: Map) bool
+        +applyBulkSettings(deviceIds: List~UUID~, settings: Map) void
     }
 
     note for DeviceConfigService "Manages device configuration\nValidates settings\nBulk operations support"
@@ -360,70 +329,9 @@ classDiagram
 
 ---
 
-## Notification Management
-
-### 10. NotificationManager
-
-**Responsibility:** Notification delivery, cooldown management, and policy enforcement
-
-```mermaid
-classDiagram
-    direction TB
-
-    class NotificationManager {
-        -notificationQueue: Queue~Notification~
-        -notificationPolicies: Map~String, NotificationPolicy~
-        -cooldowns: Map~String, Cooldown~
-        -pushService: PushNotificationService
-        -smsGateway: SMSGateway
-        -emailService: EmailService
-        +sendNotification(recipient: User, notification: Notification) void
-        +sendPushNotification(userId: UUID, message: String, data: Map) void
-        +sendSMS(phoneNumber: String, message: String) void
-        +sendEmail(email: String, subject: String, body: String) void
-        +checkCooldown(deviceId: String, eventType: EventType) bool
-        +updateCooldown(deviceId: String, eventType: EventType) void
-        +configureCooldown(deviceId: String, duration: int) void
-        +getNotificationPolicy(userId: UUID) NotificationPolicy
-        +updateNotificationPolicy(userId: UUID, policy: NotificationPolicy) void
-    }
-
-    note for NotificationManager "Central notification hub\nManages all notification delivery\nPrevents notification spam"
-```
-
----
-
 ## User & Authentication Management
 
-### 11. SignUpService
-
-**Responsibility:** User registration and verification
-
-```mermaid
-classDiagram
-    direction TB
-
-    class SignUpService {
-        -users: Repository~User~
-        -emailService: EmailService
-        -smsService: SMSService
-        -passwordPolicy: PasswordPolicy
-        +signUp(email: String, password: String, phone: String) User
-        +validateEmail(email: String) bool
-        +validatePassword(password: String) bool
-        +validatePhone(phone: String) bool
-        +sendVerificationEmail(userId: UUID) void
-        +verifyEmail(token: String) bool
-        +sendVerificationSMS(userId: UUID) void
-        +verifyPhone(otp: String) bool
-    }
-
-    note for SignUpService "Handles user registration\nVerifies email and phone\nEnforces password policy"
-```
-
----
-
-### 12. LoginService
+### 10. LoginManager
 
 **Responsibility:** Login and logout processing
 
@@ -431,8 +339,8 @@ classDiagram
 classDiagram
     direction TB
 
-    class LoginService {
-        -users: Repository~User~
+    class LoginManager {
+        -users: List~User~
         -maxFailedAttempts: int
         -lockoutDuration: int
         -failedAttempts: Map~String, int~
@@ -446,38 +354,12 @@ classDiagram
         +changePassword(userId: UUID, oldPw: String, newPw: String) void
     }
 
-    note for LoginService "Handles authentication\nPrevents brute force attacks\nAccount lockout management"
+    note for LoginManager "Handles authentication\nPrevents brute force attacks\nAccount lockout management"
 ```
 
 ---
 
-### 13. SessionManager
-
-**Responsibility:** Session creation and management
-
-```mermaid
-classDiagram
-    direction TB
-
-    class SessionManager {
-        -sessions: SessionStore
-        -sessionTimeout: int
-        -maxSessionsPerUser: int
-        +createSession(userId: UUID, deviceInfo: DeviceInfo) Session
-        +validateSession(sessionId: UUID) bool
-        +refreshSession(sessionId: UUID) void
-        +revokeSession(sessionId: UUID) void
-        +revokeAllSessions(userId: UUID) void
-        +getActiveSessions(userId: UUID) List~Session~
-        +cleanupExpiredSessions() void
-    }
-
-    note for SessionManager "Manages user sessions\nHandles session lifecycle\nCleanup expired sessions"
-```
-
----
-
-### 14. UserPermissionManager
+### 11. UserPermissionManager
 
 **Responsibility:** User permission management and role-based access control
 
@@ -486,7 +368,6 @@ classDiagram
     direction TB
 
     class UserPermissionManager {
-        -permissions: Repository~UserPermission~
         -roleTemplates: Map~UserRole, Set~Permission~~
         +assignRole(userId: UUID, role: UserRole) void
         +grantPermission(userId: UUID, permission: Permission) void
@@ -494,37 +375,10 @@ classDiagram
         +hasPermission(userId: UUID, permission: Permission) bool
         +getPermissions(userId: UUID) Set~Permission~
         +applyRoleTemplate(userId: UUID, role: UserRole) void
-        +validatePermission(userId: UUID, action: Action, resource: Resource) bool
+        +validatePermission(userId: UUID, action: Action, resource: String) bool
     }
 
     note for UserPermissionManager "Role-based access control\nGranular permission management\nRole template system"
-```
-
----
-
-## Logging & Monitoring
-
-### 15. ActivityLogger
-
-**Responsibility:** System event logging, timeline generation, and audit trail
-
-```mermaid
-classDiagram
-    direction TB
-
-    class ActivityLogger {
-        -eventStore: EventStore
-        -auditLog: AuditLog
-        +logEvent(event: Event) void
-        +logUserAction(userId: UUID, action: Action) void
-        +logSystemEvent(eventType: EventType, data: Map) void
-        +getTimeline(filter: TimelineFilter) List~Event~
-        +searchEvents(query: SearchQuery) List~Event~
-        +exportLog(filter: LogFilter, format: ExportFormat) File
-        +getAuditTrail(resourceId: UUID) List~AuditEntry~
-    }
-
-    note for ActivityLogger "Comprehensive logging system\nAudit trail for compliance\nTimeline generation"
 ```
 
 ---
@@ -554,14 +408,8 @@ graph TB
     end
 
     subgraph "User Services"
-        SUS[SignUpService]
-        LS[LoginService]
-        SM[SessionManager]
+        LM[LoginManager]
         UPM[UserPermissionManager]
-    end
-
-    subgraph "Support Services"
-        AL[ActivityLogger]
     end
 
     SMM -->|triggers| AM
@@ -573,48 +421,11 @@ graph TB
     SS -->|records| RM
     SS -->|controls| PTZ
 
-    SUS -->|creates| SM
-    LS -->|validates| SM
-    SM -->|checks| UPM
-
-    AM -->|logs| AL
-    LS -->|logs| AL
-    DR -->|logs| AL
+    LM -->|checks| UPM
 
     style SMM fill:#667eea
     style AM fill:#F44336
     style NM fill:#FF9800
-    style AL fill:#2196F3
-```
-
-### Data Flow Between Layers
-
-```mermaid
-graph TB
-    subgraph "Presentation Layer"
-        UI[ViewControllers]
-    end
-
-    subgraph "Business Logic Layer"
-        BL[Business Services]
-    end
-
-    subgraph "Data Layer"
-        DB[(Database)]
-        Storage[(Storage)]
-    end
-
-    UI -->|Commands| BL
-    BL -->|Events| UI
-    BL -->|Queries| DB
-    BL -->|Saves| DB
-    BL -->|Stores| Storage
-    BL -->|Retrieves| Storage
-
-    style UI fill:#667eea
-    style BL fill:#4CAF50
-    style DB fill:#FF9800
-    style Storage fill:#2196F3
 ```
 
 ---
@@ -637,7 +448,7 @@ graph TB
 
 **Interface Segregation Principle (ISP)**
 
-- Focused interfaces (StorageProvider, EventStore, etc.)
+- Focused interfaces for each service
 
 **Dependency Inversion Principle (DIP)**
 
@@ -647,15 +458,15 @@ graph TB
 
 ## Statistics
 
-| Category                | Count |
-| ----------------------- | ----- |
-| **Core Services**       | 15    |
-| **Security Management** | 3     |
-| **Recording/Streaming** | 3     |
-| **Device Management**   | 3     |
-| **User/Auth**           | 4     |
-| **Notification**        | 1     |
-| **Logging**             | 1     |
+| Category                | Count  |
+| ----------------------- | ------ |
+| **Core Services**       | 11     |
+| **Security**            | 2      |
+| **Recording/Streaming** | 3      |
+| **Device Management**   | 3      |
+| **Notification**        | 1      |
+| **User/Auth**           | 2      |
+| **Total Classes**       | **11** |
 
 ---
 
@@ -676,20 +487,14 @@ graph TB
 ### ✅ Security
 
 - Role-based access control
-- Session management
-- Audit logging
+- Account lockout mechanism
+- Audit logging support
 
 ### ✅ Reliability
 
 - Health monitoring
 - Error handling
 - Automatic recovery
-
-### ✅ Performance
-
-- Efficient caching
-- Connection pooling
-- Async operations
 
 ---
 
