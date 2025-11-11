@@ -1,6 +1,6 @@
 # SafeHome Business Logic Layer - Class Diagrams
 
-> Detailed UML Class Diagrams for Business Logic Components in the Backend Layer
+> Detailed UML Class Diagrams for 15 Core Business Logic Components in the Backend Layer
 
 ## 📑 Table of Contents
 
@@ -26,7 +26,6 @@
   - [14. UserPermissionManager](#14-userpermissionmanager)
 - [Logging & Monitoring](#logging--monitoring)
   - [15. ActivityLogger](#15-activitylogger)
-- [Component Relationships](#component-relationships)
 
 ---
 
@@ -130,48 +129,7 @@ classDiagram
         +updateZone(zoneId: int, zone: SafetyZone) void
     }
 
-    class SecurityMode {
-        <<enumeration>>
-        DISARMED
-        ARMED_HOME
-        ARMED_AWAY
-        ARMED_NIGHT
-        CUSTOM
-    }
-
-    class SecurityArmingState {
-        <<enumeration>>
-        DISARMED
-        ARMING
-        ARMED
-        ENTRY_DELAY
-        EXIT_DELAY
-        ALARMED
-    }
-
-    class Timer {
-        +start(duration: int) void
-        +stop() void
-        +isRunning() bool
-        +getRemainingTime() int
-    }
-
-    class SensorEvent {
-        +sensorId: String
-        +eventType: EventType
-        +timestamp: DateTime
-        +zoneIds: List~int~
-        +severity: Severity
-    }
-
-    SecurityModeManager --> SecurityMode : manages
-    SecurityModeManager --> SecurityArmingState : maintains
-    SecurityModeManager --> Timer : uses
-    SecurityModeManager --> SensorEvent : handles
-    SecurityModeManager --> SafetyZone : contains
-
-    note for SecurityModeManager "Core security management\nHandles all arming/disarming logic"
-    note for SecurityArmingState "Represents current\nsystem arming state"
+    note for SecurityModeManager "Core security management\nHandles all arming/disarming logic\nManages zones and sensors"
 ```
 
 ---
@@ -203,26 +161,7 @@ classDiagram
         +validateSensor(sensor: Sensor) bool
     }
 
-    class Sensor {
-        +sensorId: String
-        +sensorType: SensorType
-        +location: String
-        +isOnline: bool
-        +isActive: bool
-    }
-
-    class Timestamp {
-        +time: DateTime
-        +toString() String
-        +isAfter(other: Timestamp) bool
-        +isBefore(other: Timestamp) bool
-    }
-
-    SafetyZone --> Sensor : validates
-    SafetyZone --> Timestamp : tracks
-
-    note for SafetyZone "Represents a security zone\nGroups sensors logically"
-    note for Sensor "Physical sensor device\nin the system"
+    note for SafetyZone "Represents a security zone\nGroups sensors logically\nManages arming state"
 ```
 
 ---
@@ -252,59 +191,7 @@ classDiagram
         +activateSiren(alarmType: AlarmType) void
     }
 
-    class Alarm {
-        +alarmId: UUID
-        +alarmType: AlarmType
-        +triggeredBy: String
-        +triggeredAt: DateTime
-        +severity: Severity
-        +isVerified: bool
-        +isActive: bool
-        +verificationDeadline: DateTime
-    }
-
-    class AlarmPolicy {
-        +mode: SecurityMode
-        +verificationTimeout: int
-        +autoEscalate: bool
-        +notifyContacts: bool
-        +activateSiren: bool
-        +recordVideo: bool
-    }
-
-    class AlarmVerification {
-        +alarmId: UUID
-        +verifiedBy: UUID
-        +verifiedAt: DateTime
-        +confirmed: bool
-        +notes: String
-    }
-
-    class EmergencyDispatcher {
-        +dispatchPolice(alarm: Alarm) void
-        +dispatchFire(alarm: Alarm) void
-        +dispatchAmbulance(alarm: Alarm) void
-        +notifySecurityCompany(alarm: Alarm) void
-    }
-
-    class AlarmType {
-        <<enumeration>>
-        INTRUSION
-        FIRE
-        MEDICAL
-        PANIC
-        ENVIRONMENTAL
-        TECHNICAL
-    }
-
-    AlarmManager *-- Alarm : manages
-    AlarmManager --> AlarmPolicy : uses
-    AlarmManager --> AlarmVerification : creates
-    AlarmManager --> EmergencyDispatcher : uses
-    Alarm --> AlarmType : categorizes
-
-    note for AlarmManager "Central alarm management\nHandles verification and escalation"
-    note for EmergencyDispatcher "External emergency\nservice integration"
+    note for AlarmManager "Central alarm management\nHandles verification and escalation\nDispatch emergency services"
 ```
 
 ---
@@ -336,84 +223,7 @@ classDiagram
         +getStorageUsage() StorageStats
     }
 
-    class Recording {
-        +recordingId: UUID
-        +cameraId: String
-        +startTime: DateTime
-        +endTime: DateTime
-        +duration: int
-        +fileSize: long
-        +filePath: String
-        +thumbnail: String
-        +trigger: RecordingTrigger
-        +isLocked: bool
-    }
-
-    class RecordingSetting {
-        +cameraId: String
-        +quality: VideoQuality
-        +fps: int
-        +retention: int
-        +preBuffer: int
-        +postBuffer: int
-        +continuousRecording: bool
-        +motionRecording: bool
-    }
-
-    class RecordingSession {
-        +sessionId: UUID
-        +cameraId: String
-        +startedAt: DateTime
-        +isActive: bool
-        +bytesRecorded: long
-        +stop() void
-        +pause() void
-        +resume() void
-    }
-
-    class StorageProvider {
-        <<interface>>
-        +upload(file: File, path: String) void
-        +download(path: String) File
-        +delete(path: String) void
-        +getAvailableSpace() long
-    }
-
-    class RecordingTrigger {
-        <<enumeration>>
-        MANUAL
-        MOTION_DETECTED
-        ALARM_TRIGGERED
-        SCHEDULED
-        CONTINUOUS
-    }
-
-    class SearchFilter {
-        +cameraIds: List~String~
-        +startDate: DateTime
-        +endDate: DateTime
-        +trigger: RecordingTrigger
-        +minDuration: int
-        +maxDuration: int
-    }
-
-    class StorageStats {
-        +totalSpace: long
-        +usedSpace: long
-        +freeSpace: long
-        +recordingCount: int
-    }
-
-    RecordingManager *-- Recording : manages
-    RecordingManager --> RecordingSetting : uses
-    RecordingManager --> RecordingSession : creates
-    RecordingManager --> StorageProvider : uses
-    RecordingManager --> SearchFilter : uses
-    Recording --> RecordingTrigger : has
-    RecordingManager --> StorageStats : provides
-
-    note for RecordingManager "Central recording management\nHandles all recording operations"
-    note for StorageProvider "Abstraction for storage\nSupports local/cloud"
+    note for RecordingManager "Central recording management\nHandles all recording operations\nManages storage and search"
 ```
 
 ---
@@ -440,55 +250,7 @@ classDiagram
         +adjustStreamQuality(sessionId: UUID, quality: StreamQuality) void
     }
 
-    class StreamSession {
-        +sessionId: UUID
-        +cameraId: String
-        +userId: UUID
-        +startedAt: DateTime
-        +protocol: StreamingProtocol
-        +quality: StreamQuality
-        +bandwidth: float
-        +isActive: bool
-        +close() void
-        +reconnect() void
-    }
-
-    class AudioSession {
-        +sessionId: UUID
-        +streamSessionId: UUID
-        +isSpeaking: bool
-        +isListening: bool
-        +volume: float
-        +startSpeaking() void
-        +stopSpeaking() void
-        +mute() void
-        +unmute() void
-    }
-
-    class StreamingProtocol {
-        <<enumeration>>
-        RTSP
-        RTMP
-        HLS
-        WEBRTC
-    }
-
-    class StreamQuality {
-        <<enumeration>>
-        LOW
-        MEDIUM
-        HIGH
-        ULTRA
-        AUTO
-    }
-
-    StreamingService *-- StreamSession : manages
-    StreamingService --> AudioSession : creates
-    StreamSession --> StreamingProtocol : uses
-    StreamSession --> StreamQuality : has
-
-    note for StreamingService "Manages video streaming\nHandles concurrent sessions"
-    note for AudioSession "Two-way audio capability\nfor cameras"
+    note for StreamingService "Manages video streaming\nHandles concurrent sessions\nTwo-way audio support"
 ```
 
 ---
@@ -515,43 +277,7 @@ classDiagram
         +getLockOwner(cameraId: String) UUID
     }
 
-    class PTZLock {
-        +cameraId: String
-        +ownerId: UUID
-        +acquiredAt: DateTime
-        +expiresAt: DateTime
-        +isActive: bool
-        +extend(duration: int) void
-        +release() void
-    }
-
-    class PTZCommand {
-        <<enumeration>>
-        PAN_LEFT
-        PAN_RIGHT
-        TILT_UP
-        TILT_DOWN
-        ZOOM_IN
-        ZOOM_OUT
-        MOVE_TO_PRESET
-        SAVE_PRESET
-        STOP
-    }
-
-    class PTZPosition {
-        +pan: int
-        +tilt: int
-        +zoom: int
-        +presetId: int
-        +presetName: String
-    }
-
-    PTZControlService *-- PTZLock : manages
-    PTZControlService --> PTZCommand : executes
-    PTZControlService --> PTZPosition : controls
-
-    note for PTZControlService "Prevents concurrent PTZ control\nManages exclusive access"
-    note for PTZLock "Ensures only one user\ncontrols PTZ at a time"
+    note for PTZControlService "Prevents concurrent PTZ control\nManages exclusive access\nEnsures only one user controls PTZ"
 ```
 
 ---
@@ -579,51 +305,7 @@ classDiagram
         +getDevicesByCategory(category: DeviceCategory) List~Device~
     }
 
-    class Device {
-        +deviceId: UUID
-        +deviceName: String
-        +deviceType: DeviceType
-        +manufacturer: String
-        +model: String
-        +firmwareVersion: String
-        +macAddress: String
-        +ipAddress: String
-        +isOnline: bool
-        +registeredAt: DateTime
-    }
-
-    class DeviceDiscoveryService {
-        +scanNetwork() List~Device~
-        +identifyDevice(ipAddress: String) Device
-        +verifyDevice(device: Device) bool
-    }
-
-    class DeviceType {
-        <<enumeration>>
-        SENSOR
-        CAMERA
-        SIREN
-        SMART_LOCK
-        SMART_LIGHT
-        THERMOSTAT
-        HUB
-    }
-
-    class DeviceCategory {
-        <<enumeration>>
-        SECURITY
-        AUTOMATION
-        ENVIRONMENTAL
-        COMMUNICATION
-    }
-
-    DeviceRegistry *-- Device : manages
-    DeviceRegistry --> DeviceDiscoveryService : uses
-    Device --> DeviceType : categorizes
-    Device --> DeviceCategory : belongs to
-
-    note for DeviceRegistry "Central device registry\nManages all connected devices"
-    note for DeviceDiscoveryService "Automatic device discovery\non local network"
+    note for DeviceRegistry "Central device registry\nManages all connected devices\nDevice discovery and registration"
 ```
 
 ---
@@ -648,51 +330,7 @@ classDiagram
         +sendHealthAlert(deviceId: UUID, issue: HealthIssue) void
     }
 
-    class DeviceHealthReport {
-        +deviceId: UUID
-        +timestamp: DateTime
-        +status: DeviceStatus
-        +batteryLevel: int
-        +signalStrength: int
-        +lastHeartbeat: DateTime
-        +uptime: long
-        +issues: List~HealthIssue~
-    }
-
-    class DeviceStatus {
-        <<enumeration>>
-        ONLINE
-        OFFLINE
-        WARNING
-        ERROR
-        UNKNOWN
-    }
-
-    class HealthIssue {
-        +issueType: IssueType
-        +severity: Severity
-        +description: String
-        +detectedAt: DateTime
-        +isResolved: bool
-    }
-
-    class IssueType {
-        <<enumeration>>
-        LOW_BATTERY
-        WEAK_SIGNAL
-        CONNECTIVITY_LOSS
-        FIRMWARE_OUTDATED
-        SENSOR_MALFUNCTION
-        TAMPERING_DETECTED
-    }
-
-    DeviceHealthMonitor *-- DeviceHealthReport : creates
-    DeviceHealthReport --> DeviceStatus : has
-    DeviceHealthReport --> HealthIssue : contains
-    HealthIssue --> IssueType : categorizes
-
-    note for DeviceHealthMonitor "Monitors device health\nProactive issue detection"
-    note for HealthIssue "Specific device problem\nwith severity level"
+    note for DeviceHealthMonitor "Monitors device health\nProactive issue detection\nHeartbeat management"
 ```
 
 ---
@@ -717,35 +355,7 @@ classDiagram
         +applyBulkSettings(deviceIds: List~UUID~, settings: DeviceSettings) void
     }
 
-    class DeviceSettings {
-        +deviceId: UUID
-        +isActive: bool
-        +pollingInterval: int
-        +sensitivity: int
-        +alertThreshold: int
-        +customParameters: Map~String, Object~
-        +lastModified: DateTime
-        +modifiedBy: UUID
-    }
-
-    class ConfigValidator {
-        +validate(settings: DeviceSettings) ValidationResult
-        +checkCompatibility(deviceType: DeviceType, settings: DeviceSettings) bool
-        +getDefaultSettings(deviceType: DeviceType) DeviceSettings
-    }
-
-    class ValidationResult {
-        +isValid: bool
-        +errors: List~String~
-        +warnings: List~String~
-    }
-
-    DeviceConfigService *-- DeviceSettings : manages
-    DeviceConfigService --> ConfigValidator : uses
-    ConfigValidator --> ValidationResult : returns
-
-    note for DeviceConfigService "Manages device configuration\nValidates settings"
-    note for ConfigValidator "Ensures settings are\nvalid for device type"
+    note for DeviceConfigService "Manages device configuration\nValidates settings\nBulk operations support"
 ```
 
 ---
@@ -778,72 +388,7 @@ classDiagram
         +updateNotificationPolicy(userId: UUID, policy: NotificationPolicy) void
     }
 
-    class Notification {
-        +notificationId: UUID
-        +title: String
-        +message: String
-        +priority: Priority
-        +type: NotificationType
-        +recipient: User
-        +timestamp: DateTime
-        +data: Map~String, Object~
-    }
-
-    class NotificationPolicy {
-        +userId: UUID
-        +enablePush: bool
-        +enableSMS: bool
-        +enableEmail: bool
-        +quietHoursStart: Time
-        +quietHoursEnd: Time
-        +priorityThreshold: Priority
-        +channels: List~NotificationChannel~
-    }
-
-    class Cooldown {
-        +key: String
-        +lastNotified: DateTime
-        +cooldownDuration: int
-        +canNotify() bool
-        +reset() void
-    }
-
-    class PushNotificationService {
-        <<interface>>
-        +send(token: String, message: String, data: Map) void
-        +sendBatch(tokens: List~String~, message: String) void
-    }
-
-    class SMSGateway {
-        <<interface>>
-        +sendSMS(phoneNumber: String, message: String) void
-        +verifyNumber(phoneNumber: String) bool
-    }
-
-    class EmailService {
-        <<interface>>
-        +sendEmail(to: String, subject: String, body: String) void
-        +sendTemplatedEmail(to: String, template: String, data: Map) void
-    }
-
-    class NotificationChannel {
-        <<enumeration>>
-        PUSH
-        SMS
-        EMAIL
-        IN_APP
-    }
-
-    NotificationManager *-- Notification : manages
-    NotificationManager --> NotificationPolicy : enforces
-    NotificationManager --> Cooldown : uses
-    NotificationManager --> PushNotificationService : uses
-    NotificationManager --> SMSGateway : uses
-    NotificationManager --> EmailService : uses
-    NotificationPolicy --> NotificationChannel : specifies
-
-    note for NotificationManager "Central notification hub\nManages all notification delivery"
-    note for Cooldown "Prevents notification spam\nfor repeated events"
+    note for NotificationManager "Central notification hub\nManages all notification delivery\nPrevents notification spam"
 ```
 
 ---
@@ -873,49 +418,7 @@ classDiagram
         +verifyPhone(otp: String) bool
     }
 
-    class User {
-        +userId: UUID
-        +email: String
-        +passwordHash: String
-        +phoneNumber: String
-        +isEmailVerified: bool
-        +isPhoneVerified: bool
-        +createdAt: DateTime
-        +lastLogin: DateTime
-    }
-
-    class PasswordPolicy {
-        +minLength: int
-        +requireUppercase: bool
-        +requireLowercase: bool
-        +requireNumbers: bool
-        +requireSpecialChars: bool
-        +maxAge: int
-        +validate(password: String) ValidationResult
-    }
-
-    class VerificationToken {
-        +token: String
-        +userId: UUID
-        +type: TokenType
-        +expiresAt: DateTime
-        +isUsed: bool
-    }
-
-    class TokenType {
-        <<enumeration>>
-        EMAIL_VERIFICATION
-        PHONE_VERIFICATION
-        PASSWORD_RESET
-    }
-
-    SignUpService --> User : creates
-    SignUpService --> PasswordPolicy : enforces
-    SignUpService --> VerificationToken : generates
-    VerificationToken --> TokenType : has
-
-    note for SignUpService "Handles user registration\nVerifies email and phone"
-    note for PasswordPolicy "Enforces password\nsecurity requirements"
+    note for SignUpService "Handles user registration\nVerifies email and phone\nEnforces password policy"
 ```
 
 ---
@@ -943,39 +446,7 @@ classDiagram
         +changePassword(userId: UUID, oldPw: String, newPw: String) void
     }
 
-    class Session {
-        +sessionId: UUID
-        +userId: UUID
-        +token: String
-        +deviceInfo: DeviceInfo
-        +createdAt: DateTime
-        +expiresAt: DateTime
-        +lastActivity: DateTime
-        +isActive: bool
-    }
-
-    class DeviceInfo {
-        +deviceId: String
-        +platform: String
-        +osVersion: String
-        +appVersion: String
-        +ipAddress: String
-    }
-
-    class AccountLockout {
-        +email: String
-        +lockedAt: DateTime
-        +unlockAt: DateTime
-        +reason: String
-        +failedAttempts: int
-    }
-
-    LoginService --> Session : creates
-    LoginService --> AccountLockout : manages
-    Session --> DeviceInfo : contains
-
-    note for LoginService "Handles authentication\nPrevents brute force attacks"
-    note for AccountLockout "Temporary account lock\nafter failed attempts"
+    note for LoginService "Handles authentication\nPrevents brute force attacks\nAccount lockout management"
 ```
 
 ---
@@ -1001,40 +472,7 @@ classDiagram
         +cleanupExpiredSessions() void
     }
 
-    class SessionStore {
-        <<interface>>
-        +save(session: Session) void
-        +get(sessionId: UUID) Session
-        +delete(sessionId: UUID) void
-        +findByUserId(userId: UUID) List~Session~
-    }
-
-    class Session {
-        +sessionId: UUID
-        +userId: UUID
-        +token: String
-        +createdAt: DateTime
-        +expiresAt: DateTime
-        +lastActivity: DateTime
-        +isActive: bool
-        +extend(duration: int) void
-        +invalidate() void
-    }
-
-    class SessionToken {
-        +token: String
-        +algorithm: String
-        +payload: Map~String, Object~
-        +sign(secret: String) String
-        +verify(secret: String) bool
-    }
-
-    SessionManager --> SessionStore : uses
-    SessionManager *-- Session : manages
-    Session --> SessionToken : uses
-
-    note for SessionManager "Manages user sessions\nHandles session lifecycle"
-    note for SessionStore "Persistent session storage\nCan be in-memory or database"
+    note for SessionManager "Manages user sessions\nHandles session lifecycle\nCleanup expired sessions"
 ```
 
 ---
@@ -1059,68 +497,7 @@ classDiagram
         +validatePermission(userId: UUID, action: Action, resource: Resource) bool
     }
 
-    class UserPermission {
-        +userId: UUID
-        +permission: Permission
-        +grantedAt: DateTime
-        +grantedBy: UUID
-        +expiresAt: DateTime
-    }
-
-    class Permission {
-        +permissionId: String
-        +resource: Resource
-        +action: Action
-        +scope: Scope
-        +description: String
-    }
-
-    class UserRole {
-        <<enumeration>>
-        HOMEOWNER
-        FAMILY_MEMBER
-        GUEST
-        ADMIN
-        SECURITY_MONITOR
-    }
-
-    class Resource {
-        <<enumeration>>
-        DEVICE
-        CAMERA
-        RECORDING
-        ZONE
-        ALARM
-        USER
-        SYSTEM
-    }
-
-    class Action {
-        <<enumeration>>
-        CREATE
-        READ
-        UPDATE
-        DELETE
-        EXECUTE
-        CONTROL
-    }
-
-    class Scope {
-        <<enumeration>>
-        OWN
-        ASSIGNED
-        ALL
-    }
-
-    UserPermissionManager *-- UserPermission : manages
-    UserPermissionManager --> UserRole : uses
-    UserPermission --> Permission : contains
-    Permission --> Resource : targets
-    Permission --> Action : allows
-    Permission --> Scope : limits
-
-    note for UserPermissionManager "Role-based access control\nGranular permission management"
-    note for Permission "Defines specific access rights\nfor resources"
+    note for UserPermissionManager "Role-based access control\nGranular permission management\nRole template system"
 ```
 
 ---
@@ -1147,67 +524,7 @@ classDiagram
         +getAuditTrail(resourceId: UUID) List~AuditEntry~
     }
 
-    class Event {
-        +eventId: UUID
-        +timestamp: DateTime
-        +eventType: EventType
-        +source: String
-        +userId: UUID
-        +severity: Severity
-        +description: String
-        +metadata: Map~String, Object~
-    }
-
-    class AuditEntry {
-        +entryId: UUID
-        +userId: UUID
-        +action: Action
-        +resource: Resource
-        +resourceId: UUID
-        +timestamp: DateTime
-        +changes: Map~String, Object~
-        +ipAddress: String
-    }
-
-    class EventStore {
-        <<interface>>
-        +save(event: Event) void
-        +findByTimeRange(start: DateTime, end: DateTime) List~Event~
-        +findByType(eventType: EventType) List~Event~
-        +findByUser(userId: UUID) List~Event~
-    }
-
-    class AuditLog {
-        <<interface>>
-        +record(entry: AuditEntry) void
-        +getHistory(resourceId: UUID) List~AuditEntry~
-        +findByUser(userId: UUID) List~AuditEntry~
-    }
-
-    class TimelineFilter {
-        +startDate: DateTime
-        +endDate: DateTime
-        +eventTypes: List~EventType~
-        +userId: UUID
-        +severity: Severity
-    }
-
-    class SearchQuery {
-        +keyword: String
-        +filters: Map~String, Object~
-        +sortBy: String
-        +sortOrder: SortOrder
-    }
-
-    ActivityLogger --> EventStore : uses
-    ActivityLogger --> AuditLog : uses
-    ActivityLogger *-- Event : creates
-    ActivityLogger *-- AuditEntry : creates
-    ActivityLogger --> TimelineFilter : uses
-    ActivityLogger --> SearchQuery : uses
-
-    note for ActivityLogger "Comprehensive logging system\nAudit trail for compliance"
-    note for EventStore "Persistent event storage\nSupports time-range queries"
+    note for ActivityLogger "Comprehensive logging system\nAudit trail for compliance\nTimeline generation"
 ```
 
 ---
@@ -1302,80 +619,38 @@ graph TB
 
 ---
 
-## Design Patterns
+## Design Principles
 
-### 1. Repository Pattern
+### SOLID Principles
 
-- `DeviceRegistry` - Device data access
-- `RecordingManager` - Recording data access
-- `UserPermissionManager` - Permission data access
+**Single Responsibility Principle (SRP)**
+- Each service class has a single, well-defined responsibility
 
-### 2. Service Layer Pattern
+**Open/Closed Principle (OCP)**
+- Services are open for extension through interfaces and inheritance
 
-- All business logic encapsulated in service classes
-- Clear separation from presentation and data layers
+**Liskov Substitution Principle (LSP)**
+- Interfaces can be substituted with implementations
 
-### 3. Strategy Pattern
+**Interface Segregation Principle (ISP)**
+- Focused interfaces (StorageProvider, EventStore, etc.)
 
-- `NotificationPolicy` - Different notification strategies
-- `AlarmPolicy` - Different alarm handling strategies
-- `RecordingSetting` - Different recording strategies
-
-### 4. Observer Pattern
-
-- `ActivityLogger` - Observes system events
-- `DeviceHealthMonitor` - Observes device status
-
-### 5. Singleton Pattern
-
-- `SessionManager` - Single session management instance
-- `DeviceRegistry` - Single device registry
-
-### 6. Command Pattern
-
-- `PTZCommand` - PTZ control commands
-- Various action commands in the system
-
-### 7. Factory Pattern
-
-- Device creation in `DeviceRegistry`
-- Session creation in `SessionManager`
-
----
-
-## SOLID Principles
-
-### Single Responsibility Principle (SRP)
-
-Each service class has a single, well-defined responsibility
-
-### Open/Closed Principle (OCP)
-
-Services are open for extension through interfaces and inheritance
-
-### Liskov Substitution Principle (LSP)
-
-Interfaces can be substituted with implementations
-
-### Interface Segregation Principle (ISP)
-
-Focused interfaces (StorageProvider, EventStore, etc.)
-
-### Dependency Inversion Principle (DIP)
-
-Services depend on abstractions (interfaces) not concretions
+**Dependency Inversion Principle (DIP)**
+- Services depend on abstractions (interfaces) not concretions
 
 ---
 
 ## Statistics
 
-| Category               | Count   |
-| ---------------------- | ------- |
-| **Core Services**      | 15      |
-| **Supporting Classes** | 40+     |
-| **Enumerations**       | 15+     |
-| **Interfaces**         | 6       |
-| **Total Classes**      | **60+** |
+| Category                 | Count   |
+| ------------------------ | ------- |
+| **Core Services**        | 15      |
+| **Security Management**  | 3       |
+| **Recording/Streaming**  | 3       |
+| **Device Management**    | 3       |
+| **User/Auth**            | 4       |
+| **Notification**         | 1       |
+| **Logging**              | 1       |
 
 ---
 
